@@ -1,3 +1,11 @@
+################################################################################
+#
+# Application Configuration
+#
+# Copyright (c) 2019 The MITRE Corporation.  All rights reserved.
+#
+################################################################################
+
 require_relative 'boot'
 
 require 'rails/all'

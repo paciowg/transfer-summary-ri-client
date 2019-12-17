@@ -1,4 +1,13 @@
+################################################################################
+#
+# Dashboard Controller
+#
+# Copyright (c) 2019 The MITRE Corporation.  All rights reserved.
+#
+################################################################################
+
 class DashboardController < ApplicationController
+
   def index
     pat_param = params[:patient]
     redirect_to :root && return if pat_param.blank?
@@ -14,4 +23,5 @@ class DashboardController < ApplicationController
 
     @patient = CondensedPatient.new(fhir_patient)
   end
+  
 end

@@ -1,6 +1,16 @@
+################################################################################
+#
+# Home Controller
+#
+# Copyright (c) 2019 The MITRE Corporation.  All rights reserved.
+#
+################################################################################
+
 class HomeController < ApplicationController
 
   before_action :establish_session_handler, only: [ :index ]
+
+  #-----------------------------------------------------------------------------
 
   def index
     @patients = Rails.cache.read("patients") # not SH because this data isnt session-specific
@@ -16,8 +26,10 @@ class HomeController < ApplicationController
     end
   end
 
+  #-----------------------------------------------------------------------------
   private
-
+  #-----------------------------------------------------------------------------
+  
   def establish_session_handler
     session[:wakeupsession] = "ok" # using session hash prompts rails session to load
     SessionHandler.establish(session.id)

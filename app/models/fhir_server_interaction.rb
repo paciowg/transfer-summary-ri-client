@@ -1,3 +1,11 @@
+################################################################################
+#
+# FHIR Server Interaction
+#
+# Copyright (c) 2019 The MITRE Corporation.  All rights reserved.
+#
+################################################################################
+
 class FhirServerInteraction
 
   def initialize(url = nil, oauth2_id = nil, oauth2_secret = nil)

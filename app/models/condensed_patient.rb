@@ -1,3 +1,11 @@
+################################################################################
+#
+# Condensed Patient Model
+#
+# Copyright (c) 2019 The MITRE Corporation.  All rights reserved.
+#
+################################################################################
+
 class CondensedPatient 
 
     attr_reader :name, :full, :first, :last, :middle, :photo
