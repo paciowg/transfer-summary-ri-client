@@ -1,0 +1,54 @@
+<section class='container'>
+  <section class='row'>
+    <% unless @patient.nil? %>
+      <div class='col-3 card-container'>
+        <div class='card bg-dark text-white'>
+          <div class='card-header'>
+            <%= @patient.full %>
+          </div>
+          <div class='card-body'>
+            <%= display_photo(@patient.photo, @patient.gender, 
+                        class: 'profile-photo') %>
+          </div>
+        </div>
+      </div>
+      <div class='col-3 card-container'>
+        <div class='card bg-dark text-white'>
+          <div class='card-header'>
+            Patient Information
+          </div>
+          <div class='card-body'>
+            <p>
+              Gender: <span><%= @patient.gender.capitalize -%></span><br/>
+              Age: <span><%= @patient.age -%> years old</span><br/>
+              DOB: <span><%= @patient.birthday_text -%></span><br/>
+            </p>
+            <a href="#" class="btn btn-primary">Details</a>
+          </div>
+        </div>
+      </div>
+      <div class='col-3 card-container'>
+        <div class='card bg-dark text-white'>
+          <div class='card-header'>
+            Functional Status
+          </div>
+          <div class='card-body'>
+            <a href="#" class="btn btn-primary">Details</a>
+          </div>
+        </div>
+      </div>
+      <div class='col-3 card-container'>
+        <div class='card bg-dark text-white'>
+          <div class='card-header'>
+            Cognitive Status
+          </div>
+          <div class='card-body'>
+            <a href="#" class="btn btn-primary">Details</a>
+          </div>
+        </div>
+      </div>
+    <% else %>
+      Not available
+    <% end %>
+  </section>
+</section>
