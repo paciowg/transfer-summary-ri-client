@@ -6,12 +6,14 @@
 #
 ################################################################################
 
-Rails.application.routes.draw do
-  root 'home#index'
+# For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 
-  get '/dashboard', 			to: 'dashboard#index'
-  get '/functional_status', 	to: 'functional_status#index'
-  get '/cognitive_status', 		to: 'cognitive_status#index'
-  
-  # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
+Rails.application.routes.draw do
+
+  resources :functional_status, only: [:index, :show]
+  resources :cognitive_status, 	only: [:index, :show]
+
+  get '/dashboard', to: 'dashboard#index'
+
+  root 'home#index'
 end

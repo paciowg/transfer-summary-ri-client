@@ -22,6 +22,8 @@ class DashboardController < ApplicationController
     redirect_to :root && return if fhir_patient.blank?
 
     @patient = CondensedPatient.new(fhir_patient)
+    @functional_status = FunctionalStatus.sample_data
+    @cognitive_status = CognitiveStatus.sample_data
   end
-  
+
 end
