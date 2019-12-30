@@ -20,6 +20,8 @@ class FhirServerInteraction
     connect(url, oauth2_id, oauth2_secret)
   end
 
+  #-----------------------------------------------------------------------------
+
   def connect(url = nil, oauth2_id = nil, oauth2_secret = nil)
     @base_server_url = url unless url.nil?
     @oauth2_id = oauth2_id unless oauth2_id.nil?
@@ -27,33 +29,46 @@ class FhirServerInteraction
 
     @client = FHIR::Client.new(@base_server_url)
     options = @client.get_oauth2_metadata_from_conformance
+
     unless options.blank?
       @client.set_oauth2_auth(@oauth2_id, @oauth2_secret, options[:authorize_url], 
           options[:token_url], options[:site])
     end
+
     FHIR::Model.client = @client
   end
   
+  #-----------------------------------------------------------------------------
+
   def all_resources(klasses = nil, search = nil)
     replies = all_replies(klasses, search)
-    return nil unless replies
-    resources = []
-    replies.each do |reply|
-      resources.push(reply.resource.entry.collect{ |singleEntry| singleEntry.resource })
+    
+    if replies.present?
+      resources = []
+
+      replies.each do |reply|
+        resources.push(reply.resource.entry.collect{ |singleEntry| singleEntry.resource })
+      end
+
+      resources.compact!
+      resources.flatten(1)
     end
-    resources.compact!
-    resources.flatten(1)
   end
+
+  #-----------------------------------------------------------------------------
 
   def client
     @client
   end
 
+  #-----------------------------------------------------------------------------
   private
+  #-----------------------------------------------------------------------------
   
   def all_replies(klasses = nil, search = nil)
     klasses = coerce_to_a(klasses)
     replies = []
+
     if klasses.present?
       klasses.each do |klass|
         replies.push(search.present? ? @client.search(klass, search) : @client.read_feed(klass))
@@ -64,9 +79,12 @@ class FhirServerInteraction
     else
       replies.push(@client.all_history)
     end
+
     replies.compact!
     replies.blank? ? nil : replies
   end
+
+  #-----------------------------------------------------------------------------
 
   def coerce_to_a(object)
     return nil unless object

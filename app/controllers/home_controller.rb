@@ -13,15 +13,21 @@ class HomeController < ApplicationController
   #-----------------------------------------------------------------------------
 
   def index
-    @patients = Rails.cache.read("patients") # not SH because this data isnt session-specific
+    # Get list of patients from cached results from server
+    @patients = Rails.cache.read("patients")
+    @patients = nil
     if @patients.nil?
-      # Get data from https://hapi.fhir.org/BaseR4 for now.  Cache the results since they
-      # don't change so we don't burden the server.
+      # No cached patients, either because it's the first time or the cache
+      # has expired.  Make a call to the FHIR server to get the patient list.
 
-      # @patients = SessionHandler.all_resources(session.id, FHIR::Patient)
       # just dealing with first bundle of patients for now
-      @patients = SessionHandler.fhir_client(session.id).search(FHIR::Patient).resource
-      @patients = @patients.entry.collect{ |singleEntry| singleEntry.resource }
+      # bundle = SessionHandler.all_resources(session.id, FHIR::Patient)
+      # bundle = SessionHandler.fhir_client(session.id).search(FHIR::Patient).resource
+      searchParam = { search: { parameters: { _id: 'cms-patient-01' } } }
+      bundle = SessionHandler.fhir_client(session.id).search(FHIR::Patient, searchParam).resource
+      @patients = bundle.entry.collect{ |singleEntry| singleEntry.resource }
+
+      # Cache the results so we don't burden the server.
       Rails.cache.write("patients", @patients, expires_in: 1.hour)
     end
   end

@@ -6,16 +6,10 @@
     <div class="patient-list-container">
       <ul class="patient-list">
         <% @patients.each do |patient| %>
-          <% begin %>
-            <% official = patient.name.select{ |n| n.use.eql?("official") } %>
-            <% name = official.first.family + ", " + official.first.given.join(" ") %>
-          <% rescue %>
-            <% next %>
-          <% end %>
           <li>
             <button class="btn btn-primary btn-lg btn-block patient-option collapse show" 
                     type="submit" name="patient" value="<%= patient.id %>">
-                <%= name %>
+                <%= patient.name.first.family + ", " + patient.name.first.given.join(' ') %>
             </button>
           </li>
         <% end %>
