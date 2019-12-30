@@ -7,4 +7,14 @@
 ################################################################################
 
 class CognitiveStatusController < ApplicationController
+
+	def index
+	end
+
+  #-----------------------------------------------------------------------------
+
+	def show
+		@cognitive_status = CognitiveStatus.sample_data[params[:id].to_i]
+	end
+	
 end

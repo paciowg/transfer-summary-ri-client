@@ -7,4 +7,14 @@
 ################################################################################
 
 class FunctionalStatusController < ApplicationController
+
+	def index
+	end
+
+  #-----------------------------------------------------------------------------
+
+	def show
+		@functional_status = FunctionalStatus.sample_data[params[:id].to_i]
+	end
+
 end
