@@ -26,6 +26,7 @@ gem 'bootstrap-toggle-rails'    # bootstrap toggle
 gem 'fhir_client', git: 'https://github.com/fhir-crucible/fhir_client.git'  # FHIR client from MITRE's crucible project
 gem 'rdoc'                      # RDoc for documentation
 gem 'chartkick'					# Integrates chart.js functionality into Ruby
+gem 'masonry-rails'				
 
 group :development, :test do
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]   # Call 'byebug' anywhere in the code to stop execution and get a debugger console

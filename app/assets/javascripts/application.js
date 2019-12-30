@@ -20,4 +20,5 @@
 //= require jsapi
 //= require chartkick
 //= require Chart.bundle
+//= require masonry/jquery.masonry
 //= require_tree .
