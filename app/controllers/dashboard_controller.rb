@@ -9,21 +9,17 @@
 class DashboardController < ApplicationController
 
   def index
-    pat_param = params[:patient]
-    redirect_to :root && return if pat_param.blank?
+    patient_id = params[:patient]
+    if patient_id.present?
+      fhir_patient = SessionHandler.fhir_client(session.id).read(FHIR::Patient, patient_id).resource
 
-    patients = Rails.cache.read("patients")
-    if patients.nil?
-      fhir_patient = SessionHandler.fhir_client(session.id).read(FHIR::Patient, pat_param).resource
+      @patient            = Patient.new(fhir_patient, SessionHandler.fhir_client(session.id))
+      @medications        = @patient.medications
+      @functional_status  = BundledFunctionalStatus.sample_data #@patient.functional_status 
+      @cognitive_status   = BundledCognitiveStatus.sample_data #@patient.cognitive_status 
     else
-      fhir_patient = patients.select{ |patient| patient.id.eql?(pat_param) }.first
+      redirect_to :root
     end
-
-    redirect_to :root && return if fhir_patient.blank?
-
-    @patient = CondensedPatient.new(fhir_patient)
-    @functional_status = FunctionalStatus.sample_data
-    @cognitive_status = CognitiveStatus.sample_data
   end
 
 end

@@ -14,7 +14,7 @@ class FunctionalStatusController < ApplicationController
   #-----------------------------------------------------------------------------
 
 	def show
-		@functional_status = FunctionalStatus.sample_data[params[:id].to_i]
+		@functional_status = BundledFunctionalStatus.sample_data[params[:id].to_i]
 	end
 
 end

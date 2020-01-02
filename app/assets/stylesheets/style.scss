@@ -104,6 +104,15 @@ table.status {
 	font-size: 10pt;
 }
 
+div.patient-info {
+	margin-bottom: 30px;
+}
+
+div.address {
+	margin-left: 0px; 
+	margin-right: 0px;
+}
+
 @media (min-width: 200px) and (max-width: 767px) {
 	.welcome-form {
 		display: block;

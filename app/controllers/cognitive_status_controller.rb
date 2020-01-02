@@ -14,7 +14,7 @@ class CognitiveStatusController < ApplicationController
   #-----------------------------------------------------------------------------
 
 	def show
-		@cognitive_status = CognitiveStatus.sample_data[params[:id].to_i]
+		@cognitive_status = BundledCognitiveStatus.sample_data[params[:id].to_i]
 	end
 	
 end

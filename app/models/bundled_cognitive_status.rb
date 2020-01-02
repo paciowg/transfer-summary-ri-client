@@ -1,12 +1,12 @@
 ################################################################################
 #
-# Cognitive Status Model
+# Bundled Cognitive Status Model
 #
 # Copyright (c) 2019 The MITRE Corporation.  All rights reserved.
 #
 ################################################################################
 
-class CognitiveStatus
+class BundledCognitiveStatus
 
 	include ActiveModel::Model
 
@@ -14,7 +14,7 @@ class CognitiveStatus
 
   #-----------------------------------------------------------------------------
 
-	def initialize(fhir_cognitive_status)
+	def initialize(fhir_cognitive_status_bundle)
 	end
 	
   #-----------------------------------------------------------------------------
