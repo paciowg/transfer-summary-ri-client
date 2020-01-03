@@ -1,9 +1,7 @@
-# Functional Status RI Client
+# Transfer Summary RI Client
 
 Reference implementation client for the [PACIO Functional Status 
-IG](https://paciowg.github.io/functional-status-ig).
-
-Configured for Heroku deployment.
+IG](https://paciowg.github.io/functional-status-ig) and [PACIO Cognitive Status IG](https://paciowg.github.io/cognitive-status-ig).
 
 ## Installation
 
