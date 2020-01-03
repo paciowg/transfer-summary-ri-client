@@ -68,12 +68,12 @@ class Patient
   									}
 
   	fhir_bundle = @fhir_client.search(FHIR::Observation, search_param).resource
-    byebug
 
     fhir_functional_stati = fhir_bundle.entry.map(&:resource)
+    byebug
 
   	fhir_functional_stati.each do |fhir_functional_status|
-  		functional_stati = BundledFunctionalStatus.new(fhir_functional_status)
+  		functional_stati = BundledFunctionalStatus.new(fhir_functional_status, @fhir_client)
   	end
 
   	return functional_stati
@@ -94,12 +94,11 @@ class Patient
   									}
 
   	fhir_bundle = @fhir_client.search(FHIR::Observation, search_param).resource
-    byebug
 
   	fhir_cognitive_stati = fhir_bundle.entry.map(&:resource)
 
   	fhir_cognitive_stati.each do |fhir_cognitive_status|
-  		cognitive_stati = CognitiveStatus.new(fhir_cognitive_status)
+  		cognitive_stati = BundledCognitiveStatus.new(fhir_cognitive_status, @fhir_client)
   	end
 
   	return cognitive_stati

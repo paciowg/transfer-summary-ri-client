@@ -10,11 +10,41 @@ class BundledFunctionalStatus
 
 	include ActiveModel::Model
 
-	attr_reader :question, :response
+	attr_reader :id, :text, :based_on, :part_of, :status, :category, :code, 
+								:subject, :focus, :encounter, :effective, :performer,
+								:value_string, :data_absent_reason, :interpretation, :note,
+								:body_site, :method, :specimen, :device, :reference_range,
+								:has_member, :derived_from, :component 
 
   #-----------------------------------------------------------------------------
 
-	def initialize(fhir_functional_status_bundle)
+	def initialize(fhir_functional_status_bundle, fhir_client)
+		@id 									= fhir_functional_status_bundle.id
+		@text									= fhir_functional_status_bundle.text
+		@based_on							= fhir_functional_status_bundle.basedOn
+		@part_of							= fhir_functional_status_bundle.partOf
+		@status 							= fhir_functional_status_bundle.status
+		@category							= fhir_functional_status_bundle.category
+		@code									= fhir_functional_status_bundle.code
+		@subject							= fhir_functional_status_bundle.subject
+		@focus								= fhir_functional_status_bundle.focus
+		@encounter						= fhir_functional_status_bundle.encounter
+		@effective						= fhir_functional_status_bundle.effective
+		@performer						= fhir_functional_status_bundle.performer
+		@value_string					= fhir_functional_status_bundle.valueString
+		@data_absent_reason		= fhir_functional_status_bundle.dataAbsentReason
+		@interpretation				= fhir_functional_status_bundle.interpretation
+		@note 								= fhir_functional_status_bundle.note
+		@body_site						= fhir_functional_status_bundle.bodySite
+		#@method								= fhir_functional_status_bundle.method
+		@specimen							= fhir_functional_status_bundle.specimen
+		@device								= fhir_functional_status_bundle.device
+		@reference_range			= fhir_functional_status_bundle.referenceRange
+		@has_member						= fhir_functional_status_bundle.hasMember
+		@derived_from					= fhir_functional_status_bundle.derivedFrom
+		@component						= fhir_functional_status_bundle.component
+
+		@fhir_client					= fhir_client
 	end
 	
   #-----------------------------------------------------------------------------
