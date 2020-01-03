@@ -130,6 +130,12 @@ module ApplicationHelper
 
   #-----------------------------------------------------------------------------
 
+  def display_raw_date(string)
+  	display_date(DateTime.parse(string)) unless string.nil?
+  end
+
+  #-----------------------------------------------------------------------------
+
 	def display_date(datetime)
 		datetime.present? ? sanitize(datetime.strftime('%m/%d/%Y')) : "No date"
 	end
