@@ -1,17 +1,15 @@
-# Functional Status RI Client
+# Transfer Summary RI Client
 
 Reference implementation client for the [PACIO Functional Status 
-IG](https://paciowg.github.io/functional-status-ig).
-
-Configured for Heroku deployment.
+IG](https://paciowg.github.io/functional-status-ig) and [PACIO Cognitive Status IG](https://paciowg.github.io/cognitive-status-ig).
 
 ## Installation
 
-To pull in remote `functional-status-ri-client` from github for local development:
+To pull in remote `transfer-summary-ri-client` from github for local development:
 
 ```
 cd ~/path/to/your/workspace/
-git clone https://github.com/paciowg/functional-status-ri-client.git
+git clone https://github.com/paciowg/transfer-summary-ri-client.git
 ```
 
 ## Running
