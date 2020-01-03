@@ -6,7 +6,7 @@
 #
 ################################################################################
 
-class CognitiveStatus
+class CognitiveStatus < Resource
 
 	include ActiveModel::Model
 

@@ -6,7 +6,7 @@
 #
 ################################################################################
 
-class BundledCognitiveStatus
+class BundledCognitiveStatus < Resource
 
 	include ActiveModel::Model
 

@@ -9,7 +9,8 @@
 module DashboardHelper
 
 	def display_photo(photo, gender, options)
-		if photo.present?
+    options[:class] = 'img-fluid'
+ 		if photo.present?
 			result = image_tag(photo, options)
 		else
 			result = image_tag(gender == "female" ? "woman.svg" : "man-user.svg", options)

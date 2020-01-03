@@ -8,9 +8,9 @@
         <tr>
           <% medication.codings.each do |codings| %>
             <% codings.each do |coding| %>
-              <td><%= coding.display %></td>
-              <td><%= medication.status %></td>
-              <td><%= coding.code %></td>
+              <td><%= sanitize(coding.display) %></td>
+              <td><%= sanitize(medication.status) %></td>
+              <td><%= sanitize(coding.code) %></td>
             <% end %>
           <% end %>
         </tr>

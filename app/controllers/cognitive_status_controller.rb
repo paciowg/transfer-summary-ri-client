@@ -24,7 +24,8 @@ class CognitiveStatusController < ApplicationController
 			member_id = member.reference.split('/').last
 			fhir_cognitive_status = fhir_client.read(FHIR::Observation, member_id).resource
 
-			@cognitive_statuses << CognitiveStatus.new(fhir_cognitive_status)
+			@cognitive_statuses << CognitiveStatus.new(fhir_cognitive_status) unless
+																								fhir_cognitive_status.nil?
 		end
 	end
 	

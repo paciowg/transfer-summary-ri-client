@@ -6,7 +6,7 @@
 #
 ################################################################################
 
-class BundledFunctionalStatus
+class BundledFunctionalStatus < Resource
 
 	include ActiveModel::Model
 

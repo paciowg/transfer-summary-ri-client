@@ -12,6 +12,7 @@ Rails.application.routes.draw do
 
   resources :functional_status, only: [:index, :show]
   resources :cognitive_status, 	only: [:index, :show]
+  resources	:practitioners,		only: [:show]
 
   get '/dashboard', to: 'dashboard#index'
 

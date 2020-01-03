@@ -55,6 +55,12 @@ module ApplicationHelper
 	  sanitize(list.empty? ? 'None' : list.map(&:display).join(', '))
 	end
 
+  #-----------------------------------------------------------------------------
+
+  def display_code(code)
+    sanitize(code.coding.display)
+  end
+
 	#-----------------------------------------------------------------------------
 
 	# Concatenates a list of code elements.
@@ -137,13 +143,19 @@ module ApplicationHelper
 	#-----------------------------------------------------------------------------
 
 	def display_categories(categories)
-		categories.each.map { |category| category.text }.join(', ')	
+		sanitize(categories.each.map { |category| category.text }.join(', '))	
 	end
 
 	#-----------------------------------------------------------------------------
 
 	def display_performers(performers)
-		performers.each.map { |performer| performer.display }.join(', ')
+		list = []
+
+		performers.each do |performer|
+			list << display_reference(performer)
+		end
+
+		raw(list.join(', '))
 	end
 	
 end

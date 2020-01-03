@@ -14,19 +14,19 @@
         <table class='table table-striped table-dark status'>
           <tr>
             <td>Gender</td>
-            <td><%= @patient.gender %></td>
+            <td><%= sanitize(@patient.gender) %></td>
           </tr>
           <tr>
             <td>Age</td>
-            <td><%= @patient.age %> years old</td>
+            <td><%= sanitize(@patient.age) %> years old</td>
           </tr>
           <tr>
             <td>DOB</td>
-            <td><%= @patient.birth_date %></td>
+            <td><%= display_date(@patient.birth_date) %></td>
           </tr>
           <tr>
             <td>Marital Status</td>
-            <td><%= @patient.marital_status.text %></td>
+            <td><%= sanitize(@patient.marital_status.text) %></td>
           </tr>
           <tr>
             <td>Phone</td>

@@ -6,7 +6,7 @@
 #
 ################################################################################
 
-class Medication
+class Medication < Resource
 
 	include ActiveModel::Model
 

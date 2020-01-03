@@ -6,7 +6,7 @@
 #
 ################################################################################
 
-class FunctionalStatus
+class FunctionalStatus < Resource
 
 	include ActiveModel::Model
 

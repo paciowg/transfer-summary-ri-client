@@ -24,7 +24,8 @@ class FunctionalStatusController < ApplicationController
 			member_id = member.reference.split('/').last
 			fhir_functional_status = fhir_client.read(FHIR::Observation, member_id).resource
 
-			@functional_statuses << FunctionalStatus.new(fhir_functional_status)
+			@functional_statuses << FunctionalStatus.new(fhir_functional_status) unless
+																						fhir_functional_status.nil?
 		end
 	end
 

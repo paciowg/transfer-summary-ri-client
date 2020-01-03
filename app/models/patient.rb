@@ -6,7 +6,7 @@
 #
 ################################################################################
 
-class Patient
+class Patient < Resource
 
 	include ActiveModel::Model
 
@@ -16,7 +16,7 @@ class Patient
   #-----------------------------------------------------------------------------
 
   def initialize(fhir_patient, fhir_client)
-  	@id 							= fhir_patient.id
+    @id               = fhir_patient.id
   	@names 						= fhir_patient.name
   	@telecoms 				= fhir_patient.telecom
   	@addresses 				= fhir_patient.address
@@ -47,7 +47,7 @@ class Patient
     fhir_medications = filter(fhir_bundle.entry.map(&:resource), 'Medication')
 
     fhir_medications.each do |fhir_medication|
-    	medications << Medication.new(fhir_medication)
+    	medications << Medication.new(fhir_medication) unless fhir_medication.nil?
     end
 
     return medications
@@ -71,7 +71,8 @@ class Patient
     fhir_functional_statuses = fhir_bundle.entry.map(&:resource)
 
   	fhir_functional_statuses.each do |fhir_functional_status|
-      bundled_functional_statuses << BundledFunctionalStatus.new(fhir_functional_status)
+      bundled_functional_statuses << BundledFunctionalStatus.new(fhir_functional_status) unless 
+                                                          fhir_functional_status.nil?
   	end
 
   	return bundled_functional_statuses
@@ -95,7 +96,8 @@ class Patient
   	fhir_cognitive_statuses = fhir_bundle.entry.map(&:resource)
 
   	fhir_cognitive_statuses.each do |fhir_cognitive_status|
-  		bundled_cognitive_statuses << BundledCognitiveStatus.new(fhir_cognitive_status)
+  		bundled_cognitive_statuses << BundledCognitiveStatus.new(fhir_cognitive_status) unless
+                                                            fhir_cognitive_status.nil?
   	end
 
   	return bundled_cognitive_statuses

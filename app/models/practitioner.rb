@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 ################################################################################
 #
 # Practitioner Model
@@ -6,20 +8,25 @@
 #
 ################################################################################
 
-class Practitioner
+class Practitioner < Resource
 
-	include ActiveModel::Model
+  include ActiveModel::Model
 
-  attr_reader :id, :active, :names
+  attr_reader :id, :meta, :implicit_rules, :language, :text, :identifier,
+                :active, :name, :telecoms, :addresses, :gender, :birthDate,
+                :photo, :qualifications, :communications
 
   #-----------------------------------------------------------------------------
 
-  # Greatly simplified and scoped for our use case.  There are many more fields
-  # that could be populated.
-
-  def initialize(fhir_practitioner, fhir_client)
-  	@id 							= fhir_practitioner.id
-    @active           = fhir_practitioner.active
-  	@names 						= fhir_practitioner.name
+  def initialize(practitioner)
+    @name             = practitioner.name
+    @telecoms         = practitioner.telecom
+    @addresses        = practitioner.address
+    @gender           = practitioner.gender
+    @birth_date       = practitioner.birthDate
+    @photo            = practitioner.photo
+    @qualifications   = practitioner.qualification
+    @communications   = practitioner.communication
   end
 
+end
