@@ -15,8 +15,8 @@ class DashboardController < ApplicationController
 
       @patient              = Patient.new(fhir_patient, SessionHandler.fhir_client(session.id))
       @medications          = @patient.medications
-      @functional_statuses  = @patient.bundled_functional_statuses #BundledFunctionalStatus.sample_data 
-      @cognitive_statuses   = @patient.bundled_cognitive_statuses #BundledCognitiveStatus.sample_data 
+      @functional_statuses  = @patient.bundled_functional_statuses
+      @cognitive_statuses   = @patient.bundled_cognitive_statuses
     else
       redirect_to :root
     end
