@@ -31,7 +31,7 @@ class SessionHandler
 
   def self.establish(session_id, url = nil, oauth2_id = nil, oauth2_secret = nil)
     if established?(session_id)
-      client = Rails.cache.read(session_id + "--connection")
+      client = Rails.cache.read(session_id.public_id + "--connection")
     else
       client = FhirServerInteraction.new(url, oauth2_id, oauth2_secret)
     end
@@ -58,7 +58,7 @@ class SessionHandler
   #   +FhirServerInteraction+ and replaces it as the default OAuth2 secret for this session
 
   def self.reset_connection(session_id, url = nil, oauth2_id = nil, oauth2_secret = nil)
-    new_connection = Rails.cache.read(session_id + "--connection")
+    new_connection = Rails.cache.read(session_id.public_id + "--connection")
     new_connection.connect(url, oauth2_id, oauth2_id)
     store(session_id, "connection", new_connection)
   end
@@ -122,7 +122,7 @@ class SessionHandler
   # * +value+ - The value to store for future access
 
   def self.store(session_id, key, value)
-    Rails.cache.write(session_id + "--" + key, value, { expires_in: @expiry_time })
+    Rails.cache.write(session_id.public_id + "--" + key, value, { expires_in: @expiry_time })
   end
 
 
@@ -141,7 +141,7 @@ class SessionHandler
 
   def self.from_storage(session_id, key)
     active(session_id, key)
-    Rails.cache.read(session_id + "--" + key)
+    Rails.cache.read(session_id.public_id + "--" + key)
   end
 
 
@@ -157,7 +157,7 @@ class SessionHandler
   #   connection timer if nil/undefined
 
   def self.active(session_id, key = nil)
-    cache_key = session_id + "--" + (key.nil? ? "connection" : key)
+    cache_key = session_id.public_id + "--" + (key.nil? ? "connection" : key)
     val = Rails.cache.read(cache_key)
     store(session_id, cache_key, val)
   end
@@ -168,7 +168,7 @@ class SessionHandler
   @expiry_time = 30.minutes
 
   def self.established?(session_id, key = nil)
-    cache_key = session_id + "--" + (key.nil? ? "connection" : key)
+    cache_key = session_id.public_id + "--" + (key.nil? ? "connection" : key)
     !(Rails.cache.read(cache_key).nil?)
   end
 
