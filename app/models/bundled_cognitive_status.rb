@@ -18,65 +18,31 @@ class BundledCognitiveStatus
 
   #-----------------------------------------------------------------------------
 
-	def initialize(fhir_cognitive_status_bundle, fhir_client)
-		@id 									= fhir_cognitive_status_bundle.id
-		@text									= fhir_cognitive_status_bundle.text
-		@based_on							= fhir_cognitive_status_bundle.basedOn
-		@part_of							= fhir_cognitive_status_bundle.partOf
-		@status 							= fhir_cognitive_status_bundle.status
-		@category							= fhir_cognitive_status_bundle.category
-		@code									= fhir_cognitive_status_bundle.code
-		@subject							= fhir_cognitive_status_bundle.subject
-		@focus								= fhir_cognitive_status_bundle.focus
-		@encounter						= fhir_cognitive_status_bundle.encounter
-		@effective						= fhir_cognitive_status_bundle.effective
-		@performer						= fhir_cognitive_status_bundle.performer
-		@value_string					= fhir_cognitive_status_bundle.valueString
-		@data_absent_reason		= fhir_cognitive_status_bundle.dataAbsentReason
-		@interpretation				= fhir_cognitive_status_bundle.interpretation
-		@note 								= fhir_cognitive_status_bundle.note
-		@body_site						= fhir_cognitive_status_bundle.bodySite
-		#@method								= fhir_cognitive_status_bundle.method
-		@specimen							= fhir_cognitive_status_bundle.specimen
-		@device								= fhir_cognitive_status_bundle.device
-		@reference_range			= fhir_cognitive_status_bundle.referenceRange
-		@has_member						= fhir_cognitive_status_bundle.hasMember
-		@derived_from					= fhir_cognitive_status_bundle.derivedFrom
-		@component						= fhir_cognitive_status_bundle.component
-
-		@fhir_client					= fhir_client
+	def initialize(fhir_bundled_cognitive_status)
+		@id 									= fhir_bundled_cognitive_status.id
+		@text									= fhir_bundled_cognitive_status.text
+		@based_on							= fhir_bundled_cognitive_status.basedOn
+		@part_of							= fhir_bundled_cognitive_status.partOf
+		@status 							= fhir_bundled_cognitive_status.status
+		@category							= fhir_bundled_cognitive_status.category
+		@code									= fhir_bundled_cognitive_status.code
+		@subject							= fhir_bundled_cognitive_status.subject
+		@focus								= fhir_bundled_cognitive_status.focus
+		@encounter						= fhir_bundled_cognitive_status.encounter
+		@effective						= DateTime.parse(fhir_bundled_cognitive_status.effective)
+		@performer						= fhir_bundled_cognitive_status.performer
+		@value_string					= fhir_bundled_cognitive_status.valueString
+		@data_absent_reason		= fhir_bundled_cognitive_status.dataAbsentReason
+		@interpretation				= fhir_bundled_cognitive_status.interpretation
+		@note 								= fhir_bundled_cognitive_status.note
+		@body_site						= fhir_bundled_cognitive_status.bodySite
+		#@method								= fhir_bundled_cognitive_status.method
+		@specimen							= fhir_bundled_cognitive_status.specimen
+		@device								= fhir_bundled_cognitive_status.device
+		@reference_range			= fhir_bundled_cognitive_status.referenceRange
+		@has_member						= fhir_bundled_cognitive_status.hasMember
+		@derived_from					= fhir_bundled_cognitive_status.derivedFrom
+		@component						= fhir_bundled_cognitive_status.component
 	end
 	
-  #-----------------------------------------------------------------------------
-
-  def cognitive_stati
-  end
-
-  #-----------------------------------------------------------------------------
-
-	SAMPLE_DATA = [
-		{
-			context: "SNF encounter",
-			datetime: DateTime.parse("2019-11-21 14:11:00"),
-			assessments: [
-				{ question: I18n.t('cognitive-status.cam.54632-5'), response: "No" },
-				{ question: I18n.t('cognitive-status.cam.54628-3'), response: I18n.t('cognitive-status.cam.not-present') },
-				{ question: I18n.t('cognitive-status.cam.54629-1'), response: I18n.t('cognitive-status.cam.not-present') }
-			]
-		},
-		{
-			context: "HHS encounter",
-			datetime: DateTime.parse("2019-12-03 18:00:00"),
-			assessments: [
-				{ question: I18n.t('cognitive-status.cam.54632-5'), response: "Yes" },
-				{ question: I18n.t('cognitive-status.cam.54628-3'), response: I18n.t('cognitive-status.cam.intermittent') },
-				{ question: I18n.t('cognitive-status.cam.54629-1'), response: I18n.t('cognitive-status.cam.intermittent') }
-			]
-		}
-	]
-
-	def self.sample_data
-		return SAMPLE_DATA
-	end
-
 end

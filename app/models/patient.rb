@@ -55,8 +55,8 @@ class Patient
 
   #-----------------------------------------------------------------------------
 
-  def functional_status
-  	functional_stati = []
+  def bundled_functional_statuses
+  	bundled_functional_statuses = []
 
   	search_param = 	{ search:
   										{ parameters:
@@ -68,40 +68,37 @@ class Patient
   									}
 
   	fhir_bundle = @fhir_client.search(FHIR::Observation, search_param).resource
+    fhir_functional_statuses = fhir_bundle.entry.map(&:resource)
 
-    fhir_functional_stati = fhir_bundle.entry.map(&:resource)
-    byebug
-
-  	fhir_functional_stati.each do |fhir_functional_status|
-  		functional_stati = BundledFunctionalStatus.new(fhir_functional_status, @fhir_client)
+  	fhir_functional_statuses.each do |fhir_functional_status|
+      bundled_functional_statuses << BundledFunctionalStatus.new(fhir_functional_status)
   	end
 
-  	return functional_stati
+  	return bundled_functional_statuses
   end
 
   #-----------------------------------------------------------------------------
 
-  def cognitive_status
-  	cognitive_stati = []
+  def bundled_cognitive_statuses
+  	bundled_cognitive_statuses = []
 
   	search_param = 	{ search:
   										{ parameters:
   											{ 
                           patient: @id,
-                          _profile: 'http://hl7.org/fhir/us/PACIO-functional-cognitive-status/StructureDefinition/pacio-cs-BundledCognitiveStatus' 
+                          _profile: 'http://hl7.org/fhir/us/PACIO-functional-cognitive-status/StructureDefinition/pacio-fs-BundledCognitiveStatus' 
                         }
   										}
   									}
 
   	fhir_bundle = @fhir_client.search(FHIR::Observation, search_param).resource
+  	fhir_cognitive_statuses = fhir_bundle.entry.map(&:resource)
 
-  	fhir_cognitive_stati = fhir_bundle.entry.map(&:resource)
-
-  	fhir_cognitive_stati.each do |fhir_cognitive_status|
-  		cognitive_stati = BundledCognitiveStatus.new(fhir_cognitive_status, @fhir_client)
+  	fhir_cognitive_statuses.each do |fhir_cognitive_status|
+  		bundled_cognitive_statuses << BundledCognitiveStatus.new(fhir_cognitive_status)
   	end
 
-  	return cognitive_stati
+  	return bundled_cognitive_statuses
   end
 
   #-----------------------------------------------------------------------------

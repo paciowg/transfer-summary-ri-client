@@ -13,10 +13,10 @@ class DashboardController < ApplicationController
     if patient_id.present?
       fhir_patient = SessionHandler.fhir_client(session.id).read(FHIR::Patient, patient_id).resource
 
-      @patient            = Patient.new(fhir_patient, SessionHandler.fhir_client(session.id))
-      @medications        = @patient.medications
-      @functional_status  = @patient.functional_status #BundledFunctionalStatus.sample_data 
-      @cognitive_status   = @patient.cognitive_status #BundledCognitiveStatus.sample_data 
+      @patient              = Patient.new(fhir_patient, SessionHandler.fhir_client(session.id))
+      @medications          = @patient.medications
+      @functional_statuses  = @patient.bundled_functional_statuses #BundledFunctionalStatus.sample_data 
+      @cognitive_statuses   = @patient.bundled_cognitive_statuses #BundledCognitiveStatus.sample_data 
     else
       redirect_to :root
     end

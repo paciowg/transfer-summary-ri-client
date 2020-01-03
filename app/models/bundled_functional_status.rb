@@ -18,139 +18,31 @@ class BundledFunctionalStatus
 
   #-----------------------------------------------------------------------------
 
-	def initialize(fhir_functional_status_bundle, fhir_client)
-		@id 									= fhir_functional_status_bundle.id
-		@text									= fhir_functional_status_bundle.text
-		@based_on							= fhir_functional_status_bundle.basedOn
-		@part_of							= fhir_functional_status_bundle.partOf
-		@status 							= fhir_functional_status_bundle.status
-		@category							= fhir_functional_status_bundle.category
-		@code									= fhir_functional_status_bundle.code
-		@subject							= fhir_functional_status_bundle.subject
-		@focus								= fhir_functional_status_bundle.focus
-		@encounter						= fhir_functional_status_bundle.encounter
-		@effective						= fhir_functional_status_bundle.effective
-		@performer						= fhir_functional_status_bundle.performer
-		@value_string					= fhir_functional_status_bundle.valueString
-		@data_absent_reason		= fhir_functional_status_bundle.dataAbsentReason
-		@interpretation				= fhir_functional_status_bundle.interpretation
-		@note 								= fhir_functional_status_bundle.note
-		@body_site						= fhir_functional_status_bundle.bodySite
-		#@method								= fhir_functional_status_bundle.method
-		@specimen							= fhir_functional_status_bundle.specimen
-		@device								= fhir_functional_status_bundle.device
-		@reference_range			= fhir_functional_status_bundle.referenceRange
-		@has_member						= fhir_functional_status_bundle.hasMember
-		@derived_from					= fhir_functional_status_bundle.derivedFrom
-		@component						= fhir_functional_status_bundle.component
-
-		@fhir_client					= fhir_client
+	def initialize(fhir_bundled_functional_status)
+		@id 									= fhir_bundled_functional_status.id
+		@text									= fhir_bundled_functional_status.text
+		@based_on							= fhir_bundled_functional_status.basedOn
+		@part_of							= fhir_bundled_functional_status.partOf
+		@status 							= fhir_bundled_functional_status.status
+		@category							= fhir_bundled_functional_status.category
+		@code									= fhir_bundled_functional_status.code
+		@subject							= fhir_bundled_functional_status.subject
+		@focus								= fhir_bundled_functional_status.focus
+		@encounter						= fhir_bundled_functional_status.encounter
+		@effective						= DateTime.parse(fhir_bundled_functional_status.effective)
+		@performer						= fhir_bundled_functional_status.performer
+		@value_string					= fhir_bundled_functional_status.valueString
+		@data_absent_reason		= fhir_bundled_functional_status.dataAbsentReason
+		@interpretation				= fhir_bundled_functional_status.interpretation
+		@note 								= fhir_bundled_functional_status.note
+		@body_site						= fhir_bundled_functional_status.bodySite
+		#@method								= fhir_bundled_functional_status.method
+		@specimen							= fhir_bundled_functional_status.specimen
+		@device								= fhir_bundled_functional_status.device
+		@reference_range			= fhir_bundled_functional_status.referenceRange
+		@has_member						= fhir_bundled_functional_status.hasMember
+		@derived_from					= fhir_bundled_functional_status.derivedFrom
+		@component						= fhir_bundled_functional_status.component
 	end
 	
-  #-----------------------------------------------------------------------------
-
-  def functional_stati
-  end
-
-  #-----------------------------------------------------------------------------
-
-	SAMPLE_DATA = [
-		{
-			context: "SNF admission",
-			datetime: DateTime.parse("2019-11-21 14:11:00"),
-			assessments: [
-				{ question: I18n.t('functional-status.section-gg.question1'), response: I18n.t('functional-status.section-gg.moderate-assist') },
-				{ question: I18n.t('functional-status.section-gg.question2'), response: I18n.t('functional-status.section-gg.moderate-assist') },
-				{ question: I18n.t('functional-status.section-gg.question3'), response: I18n.t('functional-status.section-gg.moderate-assist') },
-				{ question: I18n.t('functional-status.section-gg.question4'), response: I18n.t('functional-status.section-gg.max-assist') },
-				{ question: I18n.t('functional-status.section-gg.question5'), response: I18n.t('functional-status.section-gg.max-assist') },
-				{ question: I18n.t('functional-status.section-gg.question6'), response: I18n.t('functional-status.section-gg.max-assist') },
-				{ question: I18n.t('functional-status.section-gg.question7'), response: I18n.t('functional-status.section-gg.max-assist') },
-				{ question: I18n.t('functional-status.section-gg.question8'), response: I18n.t('functional-status.section-gg.max-assist') },
-				{ question: I18n.t('functional-status.section-gg.question9'), response: I18n.t('functional-status.section-gg.max-assist') },
-				{ question: I18n.t('functional-status.section-gg.question10'), response: I18n.t('functional-status.section-gg.max-assist') },
-				{ question: I18n.t('functional-status.section-gg.question11'), response: I18n.t('functional-status.section-gg.max-assist') },
-				{ question: I18n.t('functional-status.section-gg.question12'), response: I18n.t('functional-status.section-gg.not-attempted') },
-				{ question: I18n.t('functional-status.section-gg.question13'), response: I18n.t('functional-status.section-gg.not-attempted') },
-				{ question: I18n.t('functional-status.section-gg.question14'), response: I18n.t('functional-status.section-gg.not-attempted') },
-				{ question: I18n.t('functional-status.section-gg.question15'), response: I18n.t('functional-status.section-gg.max-assist') },
-				{ question: I18n.t('functional-status.section-gg.question16'), response: I18n.t('functional-status.section-gg.moderate-assist') },
-				{ question: I18n.t('functional-status.section-gg.question17'), response: I18n.t('functional-status.section-gg.moderate-assist') }
-			]
-		},
-		{
-			context: "SNF discharge",
-			datetime: DateTime.parse("2019-12-03 18:00:00"),
-			assessments: [
-				{ question: I18n.t('functional-status.section-gg.question1'), response: I18n.t('functional-status.section-gg.independent') },
-				{ question: I18n.t('functional-status.section-gg.question2'), response: I18n.t('functional-status.section-gg.setup-assist') },
-				{ question: I18n.t('functional-status.section-gg.question3'), response: I18n.t('functional-status.section-gg.setup-assist') },
-				{ question: I18n.t('functional-status.section-gg.question4'), response: I18n.t('functional-status.section-gg.supervise-assist') },
-				{ question: I18n.t('functional-status.section-gg.question5'), response: I18n.t('functional-status.section-gg.moderate-assist') },
-				{ question: I18n.t('functional-status.section-gg.question6'), response: I18n.t('functional-status.section-gg.moderate-assist') },
-				{ question: I18n.t('functional-status.section-gg.question7'), response: I18n.t('functional-status.section-gg.moderate-assist') },
-				{ question: I18n.t('functional-status.section-gg.question8'), response: I18n.t('functional-status.section-gg.moderate-assist') },
-				{ question: I18n.t('functional-status.section-gg.question9'), response: I18n.t('functional-status.section-gg.moderate-assist') },
-				{ question: I18n.t('functional-status.section-gg.question10'), response: I18n.t('functional-status.section-gg.max-assist') },
-				{ question: I18n.t('functional-status.section-gg.question11'), response: I18n.t('functional-status.section-gg.moderate-assist') },
-				{ question: I18n.t('functional-status.section-gg.question12'), response: I18n.t('functional-status.section-gg.moderate-assist') },
-				{ question: I18n.t('functional-status.section-gg.question13'), response: I18n.t('functional-status.section-gg.max-assist') },
-				{ question: I18n.t('functional-status.section-gg.question14'), response: I18n.t('functional-status.section-gg.max-assist') },
-				{ question: I18n.t('functional-status.section-gg.question15'), response: I18n.t('functional-status.section-gg.moderate-assist') },
-				{ question: I18n.t('functional-status.section-gg.question16'), response: I18n.t('functional-status.section-gg.independent') },
-				{ question: I18n.t('functional-status.section-gg.question17'), response: I18n.t('functional-status.section-gg.independent') }
-			]
-		},
-		{
-			context: "HH SOC",
-			datetime: DateTime.parse("2019-12-04"),
-			assessments: [
-				{ question: I18n.t('functional-status.section-gg.question1'), response: I18n.t('functional-status.section-gg.supervise-assist') },
-				{ question: I18n.t('functional-status.section-gg.question2'), response: I18n.t('functional-status.section-gg.supervise-assist') },
-				{ question: I18n.t('functional-status.section-gg.question3'), response: I18n.t('functional-status.section-gg.supervise-assist') },
-				{ question: I18n.t('functional-status.section-gg.question4'), response: I18n.t('functional-status.section-gg.supervise-assist') },
-				{ question: I18n.t('functional-status.section-gg.question5'), response: I18n.t('functional-status.section-gg.moderate-assist') },
-				{ question: I18n.t('functional-status.section-gg.question6'), response: I18n.t('functional-status.section-gg.moderate-assist') },
-				{ question: I18n.t('functional-status.section-gg.question7'), response: I18n.t('functional-status.section-gg.moderate-assist') },
-				{ question: I18n.t('functional-status.section-gg.question8'), response: I18n.t('functional-status.section-gg.moderate-assist') },
-				{ question: I18n.t('functional-status.section-gg.question9'), response: I18n.t('functional-status.section-gg.moderate-assist') },
-				{ question: I18n.t('functional-status.section-gg.question10'), response: I18n.t('functional-status.section-gg.max-assist') },
-				{ question: I18n.t('functional-status.section-gg.question11'), response: I18n.t('functional-status.section-gg.moderate-assist') },
-				{ question: I18n.t('functional-status.section-gg.question12'), response: I18n.t('functional-status.section-gg.moderate-assist') },
-				{ question: I18n.t('functional-status.section-gg.question13'), response: I18n.t('functional-status.section-gg.max-assist') },
-				{ question: I18n.t('functional-status.section-gg.question14'), response: I18n.t('functional-status.section-gg.max-assist') },
-				{ question: I18n.t('functional-status.section-gg.question15'), response: I18n.t('functional-status.section-gg.moderate-assist') },
-				{ question: I18n.t('functional-status.section-gg.question16'), response: I18n.t('functional-status.section-gg.independent') },
-				{ question: I18n.t('functional-status.section-gg.question17'), response: I18n.t('functional-status.section-gg.independent') }
-			]
-		},
-		{
-			context: "HH Discharge",
-			datetime: nil,
-			assessments: [
-				{ question: I18n.t('functional-status.section-gg.question1'), response: I18n.t('functional-status.section-gg.independent') },
-				{ question: I18n.t('functional-status.section-gg.question2'), response: I18n.t('functional-status.section-gg.independent') },
-				{ question: I18n.t('functional-status.section-gg.question3'), response: I18n.t('functional-status.section-gg.independent') },
-				{ question: I18n.t('functional-status.section-gg.question4'), response: I18n.t('functional-status.section-gg.independent') },
-				{ question: I18n.t('functional-status.section-gg.question5'), response: I18n.t('functional-status.section-gg.independent') },
-				{ question: I18n.t('functional-status.section-gg.question6'), response: I18n.t('functional-status.section-gg.independent') },
-				{ question: I18n.t('functional-status.section-gg.question7'), response: I18n.t('functional-status.section-gg.supervise-assist') },
-				{ question: I18n.t('functional-status.section-gg.question8'), response: I18n.t('functional-status.section-gg.supervise-assist') },
-				{ question: I18n.t('functional-status.section-gg.question9'), response: I18n.t('functional-status.section-gg.supervise-assist') },
-				{ question: I18n.t('functional-status.section-gg.question10'), response: I18n.t('functional-status.section-gg.supervise-assist') },
-				{ question: I18n.t('functional-status.section-gg.question11'), response: I18n.t('functional-status.section-gg.supervise-assist') },
-				{ question: I18n.t('functional-status.section-gg.question12'), response: I18n.t('functional-status.section-gg.supervise-assist') },
-				{ question: I18n.t('functional-status.section-gg.question13'), response: I18n.t('functional-status.section-gg.supervise-assist') },
-				{ question: I18n.t('functional-status.section-gg.question14'), response: I18n.t('functional-status.section-gg.moderate-assist') },
-				{ question: I18n.t('functional-status.section-gg.question15'), response: I18n.t('functional-status.section-gg.supervise-assist') },
-				{ question: I18n.t('functional-status.section-gg.question16'), response: I18n.t('functional-status.section-gg.independent') },
-				{ question: I18n.t('functional-status.section-gg.question17'), response: I18n.t('functional-status.section-gg.independent') }
-			]
-		}
-	]
-
-	def self.sample_data
-		return SAMPLE_DATA
-	end
-
 end

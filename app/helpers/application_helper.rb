@@ -134,4 +134,16 @@ module ApplicationHelper
 		datetime.present? ? sanitize(datetime.strftime('%m/%d/%Y')) : "No date/time"
 	end
 
+	#-----------------------------------------------------------------------------
+
+	def display_categories(categories)
+		categories.each.map { |category| category.text }.join(', ')	
+	end
+
+	#-----------------------------------------------------------------------------
+
+	def display_performers(performers)
+		performers.each.map { |performer| performer.display }.join(', ')
+	end
+	
 end

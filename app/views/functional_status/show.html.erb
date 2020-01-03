@@ -1,22 +1,20 @@
 <section class='container'>
   <section class='row'>
   	<p>
-  		Context: <%= @functional_status[:context] %><br />
-  		Date/Time: <%= display_datetime(@functional_status[:datetime]) %>
+  		Context: <%= display_categories(@bundled_functional_status.category) %><br />
+  		Date/Time: <%= display_datetime(@bundled_functional_status.effective) %>
   	</p>
   	<table class='table table-striped table-dark full-status'>
   		<tr>
   			<th>Question</th>
   			<th>Response</th>
   		</tr>
- 			<% @functional_status[:assessments].each do |assessment| %>
+ 			<% @functional_statuses.each do |functional_status| %>
 	  		<tr>
-	  			<td><%= assessment[:question] %></td>
-	  			<td><%= assessment[:response] %></td>
+	  			<td><%= functional_status.code.text %></td>
+	  			<td><%= functional_status.value.text %></td>
 	  		</tr>
 	  	<% end %>
 	  </table>
 	</section>
 </section>
-
-

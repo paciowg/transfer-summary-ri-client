@@ -10,43 +10,18 @@ class CognitiveStatus
 
 	include ActiveModel::Model
 
-	attr_reader :question, :response
+	attr_reader :id, :text, :status, :code, :subject, :effective_datetime, :value
 
   #-----------------------------------------------------------------------------
 
 	def initialize(fhir_cognitive_status)
-	end
-	
-  #-----------------------------------------------------------------------------
-
-  def cognitive_stati
-  end
-
-  #-----------------------------------------------------------------------------
-
-	SAMPLE_DATA = [
-		{
-			context: "SNF encounter",
-			datetime: DateTime.parse("2019-11-21 14:11:00"),
-			assessments: [
-				{ question: I18n.t('cognitive-status.cam.54632-5'), response: "No" },
-				{ question: I18n.t('cognitive-status.cam.54628-3'), response: I18n.t('cognitive-status.cam.not-present') },
-				{ question: I18n.t('cognitive-status.cam.54629-1'), response: I18n.t('cognitive-status.cam.not-present') }
-			]
-		},
-		{
-			context: "HHS encounter",
-			datetime: DateTime.parse("2019-12-03 18:00:00"),
-			assessments: [
-				{ question: I18n.t('cognitive-status.cam.54632-5'), response: "Yes" },
-				{ question: I18n.t('cognitive-status.cam.54628-3'), response: I18n.t('cognitive-status.cam.intermittent') },
-				{ question: I18n.t('cognitive-status.cam.54629-1'), response: I18n.t('cognitive-status.cam.intermittent') }
-			]
-		}
-	]
-
-	def self.sample_data
-		return SAMPLE_DATA
+		@id 									= fhir_cognitive_status.id
+		@text									= fhir_cognitive_status.text
+		@status 							= fhir_cognitive_status.status
+		@code									= fhir_cognitive_status.code
+		@subject							= fhir_cognitive_status.subject
+		@effective_datetime		= DateTime.parse(fhir_cognitive_status.effectiveDateTime)
+		@value								= fhir_cognitive_status.valueCodeableConcept
 	end
 
 end
