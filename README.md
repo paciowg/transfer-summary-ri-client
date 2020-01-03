@@ -5,11 +5,11 @@ IG](https://paciowg.github.io/functional-status-ig) and [PACIO Cognitive Status 
 
 ## Installation
 
-To pull in remote `functional-status-ri-client` from github for local development:
+To pull in remote `transfer-summary-ri-client` from github for local development:
 
 ```
 cd ~/path/to/your/workspace/
-git clone https://github.com/paciowg/functional-status-ri-client.git
+git clone https://github.com/paciowg/transfer-summary-ri-client.git
 ```
 
 ## Running
