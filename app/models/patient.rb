@@ -62,7 +62,7 @@ class Patient < Resource
   										{ parameters:
   											{ 
                           patient: @id,
-                          _profile: 'http://hl7.org/fhir/us/PACIO-functional-functional-status/StructureDefinition/pacio-fs-BundledFunctionalStatus' 
+                          _profile: 'http://hl7.org/fhir/us/PACIO-functional-cognitive-status/StructureDefinition/pacio-fs-BundledFunctionalStatus' 
                         }
   										}
   									}
@@ -87,7 +87,7 @@ class Patient < Resource
   										{ parameters:
   											{ 
                           patient: @id,
-                          _profile: 'http://hl7.org/fhir/us/PACIO-functional-cognitive-status/StructureDefinition/pacio-fs-BundledCognitiveStatus' 
+                          _profile: 'http://hl7.org/fhir/us/PACIO-functional-cognitive-status/StructureDefinition/pacio-cs-BundledCognitiveStatus' 
                         }
   										}
   									}
