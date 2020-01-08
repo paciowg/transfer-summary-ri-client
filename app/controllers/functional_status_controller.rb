@@ -25,7 +25,7 @@ class FunctionalStatusController < ApplicationController
     																			FHIR::Observation, params[:id]).resource
 		@bundled_functional_status = 
 						BundledFunctionalStatus.new(fhir_bundled_functional_status, fhir_client)
-		@functional_statuses = @bundled_functional_status.function_statuses
+		@functional_statuses = @bundled_functional_status.functional_statuses
 	end
 
 end

@@ -23,7 +23,7 @@ class CognitiveStatusController < ApplicationController
     fhir_bundled_cognitive_status = fhir_client.read(
     																			FHIR::Observation, params[:id]).resource
 		@bundled_cognitive_status = BundledCognitiveStatus.new(fhir_bundled_cognitive_status, fhir_client)
-		@cognitive_statuses = @bundled_cognitive_status.functional_statuses
+		@cognitive_statuses = @bundled_cognitive_status.cognitive_statuses
 	end
 	
 end
