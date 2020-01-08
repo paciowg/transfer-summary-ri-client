@@ -14,7 +14,8 @@ Rails.application.routes.draw do
   resources :cognitive_status, 	only: [:index, :show]
   resources	:practitioners,		only: [:show]
 
+  get '/home', to: 'home#index'
   get '/dashboard', to: 'dashboard#index'
 
-  root 'home#index'
+  root 'welcome#index'
 end

@@ -20,7 +20,7 @@ class SessionHandler
   # * +session_id+ - indicates which session to establish a +SessionHandler+ for (use 
   #   +session.id+)
   #
-  # * +url+ - _Optional_ _param_, overrides <code>@base_server_url</code> from 
+  # * +url+ - _Optional_ _param_, overrides <code>@server_url</code> from 
   #   +FhirServerInteraction+ and replaces it as the default connection url for this session
   #
   # * +oauth2_id+ - _Optional_ _param_, overrides <code>@oauth2_id</code> from 
@@ -48,7 +48,7 @@ class SessionHandler
   #
   # * +session_id+ - indicates which session to reset the connection (use +session.id+)
   #
-  # * +url+ - _Optional_ _param_, overrides <code>@base_server_url</code> from 
+  # * +url+ - _Optional_ _param_, overrides <code>@server_url</code> from 
   #   +FhirServerInteraction+ and replaces it as the default connection url for this session
   #
   # * +oauth2_id+ - _Optional_ _param_, overrides <code>@oauth2_id</code> from 
@@ -63,6 +63,9 @@ class SessionHandler
     store(session_id, "connection", new_connection)
   end
 
+  def self.disconnect(session_id)
+    store(session_id, "connection", nil)
+  end
 
   ##
   # Gets +FHIR::Client+ instance associated with the provided +session_id+

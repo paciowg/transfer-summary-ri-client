@@ -9,9 +9,8 @@
 class FhirServerInteraction
 
   def initialize(url = nil, oauth2_id = nil, oauth2_secret = nil)
-    # Automatically set to HAPI's public testing FHIR server
-    # TODO - REMEMBER TO REPLACE WITH YOUR FHIR SERVER'S BASE URL
-    @base_server_url = "http://hapi.fhir.org/baseR4"
+    # Default to HAPI's public testing FHIR server
+    @base_server_url = DEFAULT_SERVER
   
     # TODO - SET OAUTH2 ID AND OAUTH2 SECRET IF SERVER USES OAUTH2 AUTHENTICATION
     @oauth2_id = 'example'
@@ -59,6 +58,12 @@ class FhirServerInteraction
 
   def client
     @client
+  end
+
+  #-----------------------------------------------------------------------------
+
+  def base_server_url
+    @base_server_url
   end
 
   #-----------------------------------------------------------------------------
