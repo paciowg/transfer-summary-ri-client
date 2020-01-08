@@ -58,20 +58,10 @@ class Patient < Resource
   def bundled_functional_statuses
   	bundled_functional_statuses = []
 
-  	search_param = 	{ search:
-  										{ parameters:
-  											{ 
-                          patient: @id,
-                          _profile: 'http://hl7.org/fhir/us/PACIO-functional-cognitive-status/StructureDefinition/pacio-fs-BundledFunctionalStatus' 
-                        }
-  										}
-  									}
-
-  	fhir_bundle = @fhir_client.search(FHIR::Observation, search_param).resource
-    fhir_functional_statuses = fhir_bundle.entry.map(&:resource)
-
+    fhir_functional_statuses = get_fhir_statuses_with_profile('http://hl7.org/fhir/us/PACIO-functional-cognitive-status/StructureDefinition/pacio-fs-BundledFunctionalStatus')
   	fhir_functional_statuses.each do |fhir_functional_status|
-      bundled_functional_statuses << BundledFunctionalStatus.new(fhir_functional_status) unless 
+      bundled_functional_statuses << 
+                BundledFunctionalStatus.new(fhir_functional_status, @fhir_client) unless 
                                                           fhir_functional_status.nil?
   	end
 
@@ -83,24 +73,50 @@ class Patient < Resource
   def bundled_cognitive_statuses
   	bundled_cognitive_statuses = []
 
-  	search_param = 	{ search:
-  										{ parameters:
-  											{ 
-                          patient: @id,
-                          _profile: 'http://hl7.org/fhir/us/PACIO-functional-cognitive-status/StructureDefinition/pacio-cs-BundledCognitiveStatus' 
-                        }
-  										}
-  									}
-
-  	fhir_bundle = @fhir_client.search(FHIR::Observation, search_param).resource
-  	fhir_cognitive_statuses = fhir_bundle.entry.map(&:resource)
-
+  	fhir_cognitive_statuses = get_fhir_statuses_with_profile('http://hl7.org/fhir/us/PACIO-functional-cognitive-status/StructureDefinition/pacio-cs-BundledCognitiveStatus')
   	fhir_cognitive_statuses.each do |fhir_cognitive_status|
-  		bundled_cognitive_statuses << BundledCognitiveStatus.new(fhir_cognitive_status) unless
+  		bundled_cognitive_statuses << 
+                BundledCognitiveStatus.new(fhir_cognitive_status, @fhir_client) unless
                                                             fhir_cognitive_status.nil?
   	end
 
   	return bundled_cognitive_statuses
+  end
+
+  #-----------------------------------------------------------------------------
+
+  def all_functional_statuses
+    all_functional_statuses = []
+
+    fhir_functional_statuses = get_fhir_statuses_with_profile('http://hl7.org/fhir/us/PACIO-functional-cognitive-status/StructureDefinition/pacio-fs-BundledFunctionalStatus')
+    fhir_functional_statuses.each do |fhir_functional_status|
+      functional_statuses = {}
+      functional_statuses[:bundle] = 
+                BundledFunctionalStatus.new(fhir_functional_status, @fhir_client) unless 
+                                                          fhir_functional_status.nil?
+      functional_statuses[:assessments] = functional_statuses[:bundle].functional_statuses
+      all_functional_statuses << functional_statuses
+    end
+
+    return all_functional_statuses
+  end
+
+  #-----------------------------------------------------------------------------
+
+  def all_cognitive_statuses
+    all_cognitive_statuses = []
+
+    fhir_cognitive_statuses = get_fhir_statuses_with_profile('http://hl7.org/fhir/us/PACIO-functional-cognitive-status/StructureDefinition/pacio-cs-BundledCognitiveStatus')
+    fhir_cognitive_statuses.each do |fhir_cognitive_status|
+      cognitive_statuses = {}
+      cognitive_statuses[:bundle] =
+                BundledCognitiveStatus.new(fhir_cognitive_status, @fhir_client) unless 
+                                                          fhir_cognitive_status.nil?
+      cognitive_statuses[:assessments] = cognitive_statuses[:bundle].cognitive_statuses
+      all_cognitive_statuses << cognitive_statuses
+    end
+
+    return all_cognitive_statuses
   end
 
   #-----------------------------------------------------------------------------
@@ -125,6 +141,22 @@ class Patient < Resource
     fhir_resources.select do |resource| 
     	resource.resourceType == type
     end
+  end
+
+  #-----------------------------------------------------------------------------
+
+  def get_fhir_statuses_with_profile(profile)
+    search_param =  { search:
+                      { parameters:
+                        { 
+                          patient: @id,
+                          _profile: profile 
+                        }
+                      }
+                    }
+
+    fhir_bundle = @fhir_client.search(FHIR::Observation, search_param).resource
+    fhir_statuses = fhir_bundle.entry.map(&:resource)
   end
 
 end

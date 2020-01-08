@@ -9,6 +9,12 @@
 class FunctionalStatusController < ApplicationController
 
 	def index
+		fhir_client = SessionHandler.fhir_client(session.id)
+    fhir_patient = SessionHandler.fhir_client(session.id).read(FHIR::Patient, 
+    												params['patient']).resource
+
+    @patient = Patient.new(fhir_patient, fhir_client)
+    @functional_statuses = @patient.all_functional_statuses
 	end
 
   #-----------------------------------------------------------------------------
@@ -17,16 +23,9 @@ class FunctionalStatusController < ApplicationController
 		fhir_client = SessionHandler.fhir_client(session.id)
     fhir_bundled_functional_status = fhir_client.read(
     																			FHIR::Observation, params[:id]).resource
-		@bundled_functional_status = BundledFunctionalStatus.new(fhir_bundled_functional_status)
-
-		@functional_statuses = []
-		@bundled_functional_status.has_member.each do |member|
-			member_id = member.reference.split('/').last
-			fhir_functional_status = fhir_client.read(FHIR::Observation, member_id).resource
-
-			@functional_statuses << FunctionalStatus.new(fhir_functional_status) unless
-																						fhir_functional_status.nil?
-		end
+		@bundled_functional_status = 
+						BundledFunctionalStatus.new(fhir_bundled_functional_status, fhir_client)
+		@functional_statuses = @bundled_functional_status.function_statuses
 	end
 
 end

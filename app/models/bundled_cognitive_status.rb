@@ -18,7 +18,7 @@ class BundledCognitiveStatus < Resource
 
   #-----------------------------------------------------------------------------
 
-	def initialize(fhir_bundled_cognitive_status)
+	def initialize(fhir_bundled_cognitive_status, fhir_client)
 		@id 									= fhir_bundled_cognitive_status.id
 		@text									= fhir_bundled_cognitive_status.text
 		@based_on							= fhir_bundled_cognitive_status.basedOn
@@ -43,6 +43,23 @@ class BundledCognitiveStatus < Resource
 		@has_member						= fhir_bundled_cognitive_status.hasMember
 		@derived_from					= fhir_bundled_cognitive_status.derivedFrom
 		@component						= fhir_bundled_cognitive_status.component
+
+		@fhir_client					= fhir_client
 	end
 	
+  #-----------------------------------------------------------------------------
+
+  def cognitive_statuses
+    cognitive_statuses = []
+    self.has_member.each do |member|
+      member_id = member.reference.split('/').last
+      fhir_cognitive_status = @fhir_client.read(FHIR::Observation, member_id).resource
+
+      cognitive_statuses << CognitiveStatus.new(fhir_cognitive_status) unless
+                                            fhir_cognitive_status.nil?
+    end
+
+    return cognitive_statuses
+  end
+
 end

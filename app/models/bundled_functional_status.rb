@@ -18,7 +18,7 @@ class BundledFunctionalStatus < Resource
 
   #-----------------------------------------------------------------------------
 
-	def initialize(fhir_bundled_functional_status)
+	def initialize(fhir_bundled_functional_status, fhir_client)
 		@id 									= fhir_bundled_functional_status.id
 		@text									= fhir_bundled_functional_status.text
 		@based_on							= fhir_bundled_functional_status.basedOn
@@ -43,6 +43,23 @@ class BundledFunctionalStatus < Resource
 		@has_member						= fhir_bundled_functional_status.hasMember
 		@derived_from					= fhir_bundled_functional_status.derivedFrom
 		@component						= fhir_bundled_functional_status.component
+
+		@fhir_client					= fhir_client
 	end
 	
+  #-----------------------------------------------------------------------------
+
+  def functional_statuses
+    functional_statuses = []
+    self.has_member.each do |member|
+      member_id = member.reference.split('/').last
+      fhir_functional_status = @fhir_client.read(FHIR::Observation, member_id).resource
+
+      functional_statuses << FunctionalStatus.new(fhir_functional_status) unless
+                                            fhir_functional_status.nil?
+    end
+
+    return functional_statuses
+  end
+
 end
