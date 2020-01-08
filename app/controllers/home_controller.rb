@@ -48,8 +48,13 @@ class HomeController < ApplicationController
   #-----------------------------------------------------------------------------
   
   def establish_session_handler
-    session[:wakeupsession] = "ok" # using session hash prompts rails session to load
-    SessionHandler.establish(session.id, params[:server_url])
+    if params[:server_url].present?
+      session[:wakeupsession] = "ok" # using session hash prompts rails session to load
+      SessionHandler.establish(session.id, params[:server_url])
+    else
+      err = "Please enter a FHIR server address."
+      redirect_to root_path, flash: { error: err }
+    end
   end
 
 end
