@@ -9,7 +9,7 @@
 class WelcomeController < ApplicationController
 
   def index
-    SessionHandler.disconnect(session.id)
+    SessionHandler.disconnect(session.id) if session.id
   end
 
 end
