@@ -26,7 +26,17 @@ class HomeController < ApplicationController
         searchParam = { search: { parameters: { _id: 'cms-patient-01' } } }
         bundle = SessionHandler.fhir_client(session.id).search(FHIR::Patient, searchParam).resource
       else
-        bundle = SessionHandler.fhir_client(session.id).search(FHIR::Patient).resource
+        # bundle = SessionHandler.fhir_client(session.id).search(FHIR::Patient).resource
+        @client = SessionHandler.fhir_client(session.id)
+        @client.additional_headers = {Accept: 'application/json+fhir; fhirVersion=4.0'}
+        bundle = @client.search(FHIR::Patient).resource
+        care_plan_bundle = @client.search(FHIR::CarePlan).resource
+        @care_plans = care_plan_bundle.entry.collect{ | singleEntry| singleEntry.resource } unless care_plan_bundle.nil?
+        if @care_plans.nil?
+          puts "error collecting care plans"
+        else
+          Rails.cache.write("carePlans", @care_plans, expires_in: 1.hour)
+        end
       end
 
       @patients = bundle.entry.collect{ |singleEntry| singleEntry.resource } unless bundle.nil?

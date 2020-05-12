@@ -55,6 +55,15 @@ module ApplicationHelper
 	  sanitize(list.empty? ? 'None' : list.map(&:display).join(', '))
 	end
 
+	def get_id(url)
+		components = url.split('/')
+		puts components
+		puts "GETTING TYPE"
+		sanitize(components.last)
+		# max_index = components.length - 1
+		# sanitize([components[max_index-1], components[max_index]].join('/'))
+	end
+
   #-----------------------------------------------------------------------------
 
   def display_code(code)
@@ -118,10 +127,18 @@ module ApplicationHelper
 
 	#-----------------------------------------------------------------------------
 
+
+	def make_and_display_reference(reference)
+		if reference.present?
+			components = reference.reference.split('/')
+			controller = components[4]
+			
+		end
+	end
 	def display_reference(reference)
 	  if reference.present?
 	    components = reference.reference.split('/')
-	    controller = components.first.underscore.pluralize
+	    controller = components[4].underscore.pluralize
 
 	    sanitize(link_to(reference.display,
 	                     [ '/', controller, '/', components.last ].join))
@@ -149,12 +166,13 @@ module ApplicationHelper
 	#-----------------------------------------------------------------------------
 
 	def display_categories(categories)
-		sanitize(categories.each.map { |category| category.text }.join(', '))	
+		sanitize(categories.each.map { |category| category.coding[0].code }.join(', '))	
 	end
 
 	#-----------------------------------------------------------------------------
 
 	def display_performers(performers)
+		# display_reference(performers.first)
 		list = []
 
 		performers.each do |performer|

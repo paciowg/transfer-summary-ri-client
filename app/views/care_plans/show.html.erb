@@ -1,0 +1,21 @@
+<section class='container'>
+  <section class='row'>
+    <% if @care_plan.present? %>
+      <div class='col-6 card-container'>
+        <%= render 'care-plan-card'%>
+      </div>
+      <div class='col-6 card-container'>
+        <%= render 'addresses-card' %>
+      </div>
+      <div class='col-6 card-container'>
+        <%= render 'goals-card' %>
+      </div>
+      <div class='col-6 card-container'>
+        <%= render 'activities-card' %>
+      </div>
+    <% else %>
+      Not available
+    <% end %>
+  </section>
+</section>
+

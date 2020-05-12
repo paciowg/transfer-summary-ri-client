@@ -1,0 +1,2 @@
+module RelatedPeopleHelper
+end

@@ -31,6 +31,7 @@ class BundledCognitiveStatus < Resource
 		@encounter						= fhir_bundled_cognitive_status.encounter
 		@effective						= DateTime.parse(fhir_bundled_cognitive_status.effective)
 		@performer						= fhir_bundled_cognitive_status.performer
+		puts @performer
 		@value_string					= fhir_bundled_cognitive_status.valueString
 		@data_absent_reason		= fhir_bundled_cognitive_status.dataAbsentReason
 		@interpretation				= fhir_bundled_cognitive_status.interpretation
