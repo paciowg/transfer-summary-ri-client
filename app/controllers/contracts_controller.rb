@@ -1,5 +1,5 @@
 class ContractsController < ApplicationController
-  before_action :set_contract, only: [:show, :edit, :update, :destroy]
+  # before_action :set_contract, only: [:show, :edit, :update, :destroy]
 
   # GET /contracts
   # GET /contracts.json
@@ -10,6 +10,11 @@ class ContractsController < ApplicationController
   # GET /contracts/1
   # GET /contracts/1.json
   def show
+    fhir_client = SessionHandler.fhir_client(session.id)
+    fhir_contract = fhir_client.read(FHIR::Contract, params[:id]).resource
+
+    @contract = Contract.new(fhir_contract) unless fhir_contract.nil?
+    @fhir_client = fhir_client
   end
 
   # GET /contracts/new

@@ -14,11 +14,12 @@ class Practitioner < Resource
 
   attr_reader :id, :meta, :implicit_rules, :language, :text, :identifier,
                 :active, :name, :telecoms, :addresses, :gender, :birthDate,
-                :photo, :qualifications, :communications
+                :photo, :qualifications, :communications, :resourceType
 
   #-----------------------------------------------------------------------------
 
-  def initialize(practitioner)
+  def initialize(practitioner, fhir_client=nil)
+    @id               = practitioner.id
     @name             = practitioner.name
     @telecoms         = practitioner.telecom
     @addresses        = practitioner.address
@@ -27,6 +28,7 @@ class Practitioner < Resource
     @photo            = practitioner.photo
     @qualifications   = practitioner.qualification
     @communications   = practitioner.communication
+    @resourceType     = practitioner.resourceType
   end
 
 end

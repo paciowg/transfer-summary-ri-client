@@ -10,20 +10,21 @@ class Patient < Resource
 
 	include ActiveModel::Model
 
-  attr_reader :id, :names, :telecoms, :addresses, :birth_date, :gender, 
-  								:marital_status, :photo
+  attr_reader :id, :name, :telecoms, :addresses, :birth_date, :gender, 
+  								:marital_status, :photo, :resourceType
 
   #-----------------------------------------------------------------------------
 
   def initialize(fhir_patient, fhir_client)
     @id               = fhir_patient.id
-  	@names 						= fhir_patient.name
+  	@name 						= fhir_patient.name
   	@telecoms 				= fhir_patient.telecom
   	@addresses 				= fhir_patient.address
   	@birth_date 			= fhir_patient.birthDate.to_date
   	@gender 					= fhir_patient.gender
   	@marital_status 	= fhir_patient.maritalStatus
-  	@photo						= nil
+    @photo						= nil
+    @resourceType     = fhir_patient.resourceType
 
   	@fhir_client			= fhir_client
   end

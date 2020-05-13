@@ -9,7 +9,7 @@
           <tr>
             <td>Related to:</td>
             <td>
-              <%= link_to display_human_name(@patient.names.first), 
+              <%= link_to display_human_name(@patient.name.first), 
                             dashboard_path(patient: @patient.id)  %>
             </td>
           </tr>

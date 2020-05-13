@@ -4,17 +4,10 @@ class QuestionnaireResponseController < ApplicationController
 
   def show
     fhir_client = SessionHandler.fhir_client(session.id)
-    fhir_questionnaire_response = fhir_client.read(
-    																			FHIR::Observation, params[:id]).resource
-		@bundled_functional_status = BundledFunctionalStatus.new(fhir_bundled_functional_status)
+    fhir_questionnaire_response = fhir_client.read(FHIR::QuestionnaireResponse, params[:id]).resource
+    @questionnaire_response = QuestionnaireResponse.new(fhir_questionnaire_response) unless fhir_questionnaire_response.nil?
 
-		@functional_statuses = []
-		@bundled_functional_status.has_member.each do |member|
-			member_id = member.reference.split('/').last
-			fhir_functional_status = fhir_client.read(FHIR::Observation, member_id).resource
-
-			@functional_statuses << FunctionalStatus.new(fhir_functional_status) unless
-																						fhir_functional_status.nil?
-		end
+    fhir_questionnaire = fhir_client.read(FHIR::Questionnaire, @questionnaire_response.patient.reference.split('/').last).resource
+    @patient              = Patient.new(fhir_patient, fhir_client) unless fhir_patient.nil?
   end
 end

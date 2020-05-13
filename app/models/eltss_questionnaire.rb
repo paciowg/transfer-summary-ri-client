@@ -18,4 +18,5 @@ class EltssQuestionnaire < Resource
         @name = fhir_eltss_questionnaire.name
         @status = fhir_eltss_questionnaire.status
         @item = fhir_eltss_questionnaire.item
+    end
 end

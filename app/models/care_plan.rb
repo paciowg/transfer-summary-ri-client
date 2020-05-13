@@ -11,7 +11,7 @@ class CarePlan < Resource
     include ActiveModel::Model
 
     attr_reader :id, :status, :intent, :category, :subject, :period,
-                :author, :conditions, :supportingInfoRefs, :goal,
+                :author, :conditions, :supportingInfo, :goal,
                 :contributor, :activity, :title, :description
 
      #-----------------------------------------------------------------------------
@@ -78,17 +78,6 @@ class CarePlan < Resource
             names << name
         end
         return names
-    end
-
-    def supportingInfo
-        supportingInfo = []
-        @supportingInfoRefs.each do |infoRef| 
-            fhir_supportingInfo = @fhir_client.read(nil, get_type_and_id(infoRef.reference)).resource
-            # WARN: constantize may not be safe
-            class_string = get_type_and_id(infoRef.reference).split('/')[0].constantize
-            supportingInfo << class_string.new(fhir_supportingInfo)
-        end
-        return supportingInfo
     end
 
     def activities

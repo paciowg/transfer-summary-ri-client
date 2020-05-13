@@ -7,7 +7,7 @@
       <% @care_plan.activity.each do |activity| %>
         <% if activity.detail.present? %>
           <tr>
-            <td><%=sanitize(activity.detail.description) %></td>
+            <td colspan="3"><%=sanitize(activity.detail.description) %></td>
           </tr>
         <% else %>
           <tr>

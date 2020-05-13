@@ -198,5 +198,12 @@ module ApplicationHelper
         class_string = get_type(reference_string).constantize
 		return class_string.new(fhir_object)
 	end
+
+	def get_object_from_url_with_client(reference_string, fhir_client)
+		fhir_object = fhir_client.read(nil, [get_type(reference_string), get_id(reference_string)].join('/')).resource
+        # WARN: constantize may not be safe
+        class_string = get_type(reference_string).constantize
+		return class_string.new(fhir_object, fhir_client)
+	end
 	
 end
