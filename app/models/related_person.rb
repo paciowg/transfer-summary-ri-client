@@ -17,4 +17,5 @@ class RelatedPerson < Resource
         @patient = fhir_relatedPerson.patient
         @relationship = fhir_relatedPerson.relationship
         @name = fhir_relatedPerson.name
+    end
 end

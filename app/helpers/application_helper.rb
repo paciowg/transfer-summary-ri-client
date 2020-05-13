@@ -57,11 +57,14 @@ module ApplicationHelper
 
 	def get_id(url)
 		components = url.split('/')
-		puts components
-		puts "GETTING TYPE"
 		sanitize(components.last)
 		# max_index = components.length - 1
 		# sanitize([components[max_index-1], components[max_index]].join('/'))
+	end
+
+	def get_type(url)
+		components = url.split('/')
+		sanitize(components[components.length-2])
 	end
 
   #-----------------------------------------------------------------------------
@@ -180,6 +183,20 @@ module ApplicationHelper
 		end
 
 		raw(list.join(', '))
+	end
+
+	def get_object_from_id(reference, fhir_client)
+		fhir_object = fhir_client.read(nil, reference).resource
+        # WARN: constantize may not be safe
+        class_string = get_type(reference).constantize
+		return class_string.new(fhir_object)
+	end
+
+	def get_object_from_url(reference_string, fhir_client)
+		fhir_object = fhir_client.read(nil, [get_type(reference_string), get_id(reference_string)].join('/')).resource
+        # WARN: constantize may not be safe
+        class_string = get_type(reference_string).constantize
+		return class_string.new(fhir_object)
 	end
 	
 end

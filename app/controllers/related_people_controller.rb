@@ -1,5 +1,5 @@
 class RelatedPeopleController < ApplicationController
-  before_action :set_related_person, only: [:show, :edit, :update, :destroy]
+  # before_action :set_related_person, only: [:show, :edit, :update, :destroy]
 
   # GET /related_people
   # GET /related_people.json
@@ -10,6 +10,13 @@ class RelatedPeopleController < ApplicationController
   # GET /related_people/1
   # GET /related_people/1.json
   def show
+    fhir_client = SessionHandler.fhir_client(session.id)
+    fhir_related_person = fhir_client.read(FHIR::RelatedPerson, params[:id]).resource
+    @related_person = RelatedPerson.new(fhir_related_person) unless fhir_related_person.nil?
+
+    fhir_patient = fhir_client.read(FHIR::Patient, @related_person.patient.reference.split('/').last).resource
+    @patient              = Patient.new(fhir_patient, fhir_client) unless fhir_patient.nil?
+
   end
 
   # GET /related_people/new
