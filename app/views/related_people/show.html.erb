@@ -18,7 +18,7 @@
             <td>
               <% @related_person.relationship.each do |relationship| %>
                 <% relationship.coding.each do |code| %>
-                <%= code.code %> 
+                <%= I18n.translate(code.code, :scope => ["related-person"]) %> 
                 <% end %>
               <% end %>
             </td>

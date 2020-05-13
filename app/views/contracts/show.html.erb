@@ -20,7 +20,7 @@
                 <% signer_object = get_object_from_url_with_client(signer.party.reference, @fhir_client) %>
                 <td><%= link_to display_human_name(get_object_from_url_with_client(signer.party.reference, @fhir_client).name.first), 
                     :controller => signer_object.resourceType.underscore.pluralize, :action => "show", :id => signer_object.id %></td>
-                <td><%= sanitize(signer.type.code) %></td>
+                <td><%= sanitize(I18n.translate(signer.type.code, :scope => [:contract, :signers])) %></td>
                 <td><%= signer.signature[0].when %> </td>
             </tr>
         <% end %>
