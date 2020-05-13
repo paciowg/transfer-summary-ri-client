@@ -62,7 +62,7 @@ class Patient < Resource
   	search_param = 	{ search:
   										{ parameters:
   											{ 
-                          patient: ["Patient", @id].join('/'),
+                          patient: @id,
                           _profile: 'http://pacioproject.org/StructureDefinition/pacio-bfs' 
                         }
   										}
@@ -87,7 +87,7 @@ class Patient < Resource
   	search_param = 	{ search:
   										{ parameters:
   											{ 
-                          patient: ["Patient", @id].join('/'),
+                          patient: @id,
                           _profile: 'http://pacioproject.org/StructureDefinition/pacio-bcs' 
                         }
   										}
