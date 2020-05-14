@@ -67,6 +67,15 @@ module ApplicationHelper
 		sanitize(components[components.length-2])
 	end
 
+	def uri?(string)
+		uri = URI.parse(string)
+		%w( http https ).include?(uri.scheme)
+	  rescue URI::BadURIError
+		false
+	  rescue URI::InvalidURIError
+		false
+	end
+
   #-----------------------------------------------------------------------------
 
   def display_code(code)
@@ -138,13 +147,13 @@ module ApplicationHelper
 			
 		end
 	end
+
 	def display_reference(reference)
 	  if reference.present?
-	    components = reference.reference.split('/')
-	    controller = components[4].underscore.pluralize
-
-	    sanitize(link_to(reference.display,
-	                     [ '/', controller, '/', components.last ].join))
+		components = reference.reference.split('/')
+		controller = components[-2].underscore.pluralize
+		sanitize(link_to(reference.display,
+			[ '/', controller, '/', components.last ].join))
 	  end
 	end
 

@@ -29,7 +29,9 @@ class BundledCognitiveStatus < Resource
 		@subject							= fhir_bundled_cognitive_status.subject
 		@focus								= fhir_bundled_cognitive_status.focus
 		@encounter						= fhir_bundled_cognitive_status.encounter
-		@effective						= DateTime.parse(fhir_bundled_cognitive_status.effective)
+		unless fhir_bundled_cognitive_status.effective.nil?
+			@effective						= DateTime.parse(fhir_bundled_cognitive_status.effective)
+		end
 		@performer						= fhir_bundled_cognitive_status.performer
 		@value_string					= fhir_bundled_cognitive_status.valueString
 		@data_absent_reason		= fhir_bundled_cognitive_status.dataAbsentReason
