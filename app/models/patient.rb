@@ -39,7 +39,8 @@ class Patient < Resource
     									{ parameters: 
     										{
                           patient: ["Patient", @id].join('/'),
-    											_include: ['MedicationRequest:medication'] 
+                          _include: ['MedicationRequest:medication'],
+                          _count: 10
     										} 
     									} 
     								}
@@ -75,7 +76,9 @@ class Patient < Resource
   	fhir_functional_statuses.each do |fhir_functional_status|
       bundled_functional_statuses << BundledFunctionalStatus.new(fhir_functional_status) unless 
                                                           fhir_functional_status.nil?
-  	end
+    end
+    puts "PRINTING FUNC STATUSES"
+    puts bundled_functional_statuses
 
   	return bundled_functional_statuses
   end

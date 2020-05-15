@@ -79,7 +79,7 @@ module ApplicationHelper
   #-----------------------------------------------------------------------------
 
   def display_code(code)
-    sanitize(code.coding.display)
+    sanitize(code.coding[0].display)
   end
 
 	#-----------------------------------------------------------------------------
