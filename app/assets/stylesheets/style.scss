@@ -1,136 +1,154 @@
 body {
-	background-color: black;
+	background-color: #020;
 	color: #eee;
 	padding-bottom: 20px;
-}
-
-main > .container {
-  padding: 30px 15px;
-}
-
-.navbar-brand {
+  }
+  
+  main > .container {
+	padding: 30px 15px;
+  }
+  
+  .navbar-brand {
 	display: block;
-}
-
-.navbar-collapse {
+  }
+  
+  .navbar-collapse {
 	margin-left: 100px;
-}
-
-#logo {
+  }
+  
+  #logo {
 	height: 50px;
 	float: left;
 	margin-right: 20px;
-}
-
-.navbar-brand a {
+  }
+  
+  .navbar-brand a {
 	width: 300px;
 	color: #eee;
 	font-size: 24pt;
 	text-decoration: none;
-}
-
-footer {
-	background-color: #222;
+  }
+  
+  footer {
+	background-color: #242;
 	height: 80px;
 	position: fixed;
 	bottom: 0px;
 	width: 100%;
 	z-index: 2;
-
+  
 	.copyright {
+	  color: #eee;
+	  margin-top: auto;
+	  margin-bottom: auto;
+	  margin-left: 20px;
+  
+	  a {
 		color: #eee;
-		margin-top: auto;
-		margin-bottom: auto;
-		margin-left: 20px;
-
-		a {
-			color: #eee;
-		}
+	  }
 	}
-}
-
-.welcome-form {
+  }
+  
+  .bg-dark {
+	background-color: #244a30 !important;
+  }
+  
+  .table-dark {
+	background-color: #244a30;
+  }
+  
+  .table-dark th, .table-dark td, .table-dark thead th {
+	border-color: #254d35;
+  }
+  
+  .welcome-form {
 	margin: 0 auto;
-
+  
 	.form-control {
-		width: 600px;
+	  width: 600px;
 	}
-
-}
-
-.client-connected {
+  
+  }
+  
+  .client-connected {
 	text-align: center;
-}
-
-.welcome-text {
+  }
+  
+  .welcome-text {
 	text-align: center;
-}
-
-#compare-url {
+  }
+  
+  #compare-url {
 	width: 100%;
-}
-
-.container {
+  }
+  
+  .container {
 	margin-bottom: 70px;
 	margin-top: 90px;
-}
-
-table {
+  }
+  
+  table {
 	margin-top: 20px;
-}
-
-.btn-group {
+  }
+  
+  .btn-group {
 	float: right;
-}
-
-.messages {
+  }
+  
+  .messages {
 	margin-bottom: -100px;
-}
-
-.card-container {
+  }
+  
+  .card-container {
 	padding: 10px;
-}
-
-.card {
+  }
+  
+  .card {
 	padding: 0px;
-}
-
-table.full_status {
+  }
+  
+  table.full_status {
 	width: 60%;
-}
-
-table.status {
+  }
+  
+  table.status {
 	margin-top: -10px;
 	margin-bottom: -10px;
 	font-size: 10pt;
-}
-
-div.patient-info {
+  }
+  
+  table.compare {
+	margin-top: 10px;
+	font-size: 10pt;
+  }
+  
+  div.patient-info {
 	margin-bottom: 30px;
-}
-
-div.address {
+  }
+  
+  div.address {
 	margin-left: 0px; 
 	margin-right: 0px;
-}
-
-@media (min-width: 200px) and (max-width: 767px) {
+  }
+  
+  @media (min-width: 200px) and (max-width: 767px) {
 	.welcome-form {
-		display: block;
-		margin: 0 auto;
-
-		.form-control, .btn {
-			width: 300px !important;
-			margin-bottom: 10px;
-		}
-
-		.btn {
-			margin-left: 15px;
-		}
-
-		.col-md-3 { // restores bootstrap class to original state
-			padding-left: 15px;
-		}
- 
+	  display: block;
+	  margin: 0 auto;
+  
+	  .form-control, .btn {
+		width: 300px !important;
+		margin-bottom: 10px;
+	  }
+  
+	  .btn {
+		margin-left: 15px;
+	  }
+  
+	  .col-md-3 { // restores bootstrap class to original state
+		padding-left: 15px;
+	  }
+   
 	}
-}
+  }
+  

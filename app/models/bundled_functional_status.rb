@@ -29,7 +29,9 @@ class BundledFunctionalStatus < Resource
 		@subject							= fhir_bundled_functional_status.subject
 		@focus								= fhir_bundled_functional_status.focus
 		@encounter						= fhir_bundled_functional_status.encounter
-		@effective						= DateTime.parse(fhir_bundled_functional_status.effective)
+		unless fhir_bundled_functional_status.effective.nil?
+			@effective						= DateTime.parse(fhir_bundled_functional_status.effective)
+		end
 		@performer						= fhir_bundled_functional_status.performer
 		@value_string					= fhir_bundled_functional_status.valueString
 		@data_absent_reason		= fhir_bundled_functional_status.dataAbsentReason

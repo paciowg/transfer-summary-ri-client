@@ -67,6 +67,20 @@ en:
       not-present: "Behavior not present"
       continuous: "Behavior continuously present, does not fluctuate"
       intermittent: "Behavior present, fluctuates (comes and goes, changes in severity)"
+# TODO: Add all roles here for extensibility
+  contract:
+    signers: 
+      AMENDER: "Amender"
+      AUTHN: "Authenticator"
+      AUT: "Author"
+      COAUTH: "Co-Author"
+      GUARD: "Legal Guardian"
+      HPROV: "Healthcare Provider"
+      PAT: "Patient"
+# TODO: Same Here
+  related-person:
+    SONC: "Son"
+    GUARD: "Legal Guardian"
 
 
 

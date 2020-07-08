@@ -1,7 +1,7 @@
 <div class='card bg-dark text-white'>
   <div class='card-header'>
     Patient: 
-    <% @patient.names.each do |name| %>
+    <% @patient.name.each do |name| %>
       <%= display_human_name(name) %><br />
     <% end %>
   </div>

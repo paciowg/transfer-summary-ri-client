@@ -10,10 +10,28 @@
 
 Rails.application.routes.draw do
 
+  resources :patients
+  resources :observations
+  resources :practitioner_roles
+  resources :contracts
+  resources :eltss_questionnaires
+  resources :risk_assessments
+  resources :observation_eltsses
+  resources :related_people
+  resources :claims
+  resources :service_requests
+  resources :goals
+  resources :episode_of_cares
+  resources :organizations
+  resources :conditions
+  resources :care_plans
+  resources :questionnaire_responses
+  get 'questionnaire_responses/index'
+  get 'questionnaire_responses/show'
   resources :functional_status, only: [:index, :show]
   resources :cognitive_status, 	only: [:index, :show]
   resources	:practitioners,		only: [:show]
-
+  get '/patients/show', to: 'dashboard#index'
   get '/home', to: 'home#index'
   get '/dashboard', to: 'dashboard#index'
 
