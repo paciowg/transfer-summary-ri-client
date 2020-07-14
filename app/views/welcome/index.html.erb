@@ -6,6 +6,8 @@
 			<div class='form-group col-md-7 last'>
 				<%= text_field_tag :server_url, nil, class: 'form-control',
 							placeholder: 'http://hapi.fhir.org/baseR4' %>
+				Auth Server Client ID (leave blank if not using OAUTH): <%= text_field_tag :client_id, 'Auth Server Client ID', class: 'form-control' %>
+				Auth Server Client Secret (leave blank if not using OAUTH): <%= text_field_tag :client_secret, 'Auth Server Client Secret', class: 'form-control' %>
 			</div>
 			<%= button_tag 'Connect', class: 'btn btn-primary col-md-2', id: 'server-url' %>
 			<div class='col'></div>

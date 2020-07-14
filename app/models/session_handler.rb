@@ -30,12 +30,13 @@ class SessionHandler
   #   +FhirServerInteraction+ and replaces it as the default OAuth2 secret for this session
 
   def self.establish(session_id, url = nil, oauth2_id = nil, oauth2_secret = nil)
-    if established?(session_id)
-      client = Rails.cache.read(session_id.public_id + "--connection")
-    else
-      client = FhirServerInteraction.new(url, oauth2_id, oauth2_secret)
-    end
-    store(session_id, "connection", client)
+    # if established?(session_id)
+    #   client = Rails.cache.read(session_id.public_id + "--connection")
+    # else
+      @client = FhirServerInteraction.new(url, oauth2_id, oauth2_secret)
+      @client
+    # end
+    # store(session_id, "connection", client)
   end
 
 
@@ -131,6 +132,14 @@ class SessionHandler
   # * +value+ - The value to store for future access
 
   def self.store(session_id, key, value)
+    puts "public_id: "
+    puts session_id.public_id
+    puts "key: "
+    puts key
+    puts "value: "
+    puts value
+    puts "expiry: "
+    puts @expiry_time
     Rails.cache.write(session_id.public_id + "--" + key, value, { expires_in: @expiry_time })
   end
 
