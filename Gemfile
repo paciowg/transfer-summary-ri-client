@@ -1,14 +1,16 @@
 source 'https://rubygems.org'
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
-ruby '2.6.3'
+ruby '2.6.6'
 
 gem 'rails', '~> 5.2.4.1'       # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'pg'                   		# Use Postgres as the database for Active Record
 gem 'puma', '~> 3.12.2'         # Use Puma as the app server
 gem 'sass-rails', '~> 5.0'      # Use SCSS for stylesheets
 gem 'uglifier', '>= 1.3.0'      # Use Uglifier as compressor for JavaScript assets
-
+gem 'ruby-debug-ide'            # for VSCODE
+gem 'debase'                    # for VSCODE
+gem 'rspec'                     # for VSCODE
 # gem 'mini_racer', platforms: :ruby  # See https://github.com/rails/execjs#readme for more supported runtimes
 
 gem 'coffee-rails', '~> 4.2'    # Use CoffeeScript for .coffee assets and views
@@ -48,3 +50,4 @@ end
 
 gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]    # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem 'pry'
+gem 'wdm', '>= 0.1.0' if Gem.win_platform?

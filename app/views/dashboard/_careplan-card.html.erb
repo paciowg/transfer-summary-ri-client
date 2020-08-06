@@ -1,0 +1,21 @@
+<div class='card bg-dark text-white'>
+  <div class='card-header'>
+    Careplans (<%= @careplans.length %>)
+  </div>
+  <div class='card-body'>
+    <table class='table table-striped table-dark status'>
+      <% @careplans.each do |careplan| %>
+        <tr>
+		  <td><%= link_to "#{careplan.id}", edit_care_plan_url(careplan.id) %></td>
+		  <td><%= sanitize(careplan.status) %></td>
+		  <td><%= sanitize(careplan.period) %></td>
+        </tr>
+      <% end %>
+    </table>
+	<p>
+	Actions:
+	
+	<%= link_to "Add New Care Plan",  new_patient_care_plan_path(@patient.id) %>
+	</p>
+  </div>
+</div>

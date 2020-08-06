@@ -16,20 +16,38 @@ class Patient < Resource
   #-----------------------------------------------------------------------------
 
   def initialize(fhir_patient, fhir_client)
-    @id               = fhir_patient.id
+    @id                         = fhir_patient.id
   	@name 						= fhir_patient.name
-  	@telecoms 				= fhir_patient.telecom
-  	@addresses 				= fhir_patient.address
-  	@birth_date 			= fhir_patient.birthDate.to_date
+  	@telecoms 				    = fhir_patient.telecom
+  	@addresses 				    = fhir_patient.address
+  	@birth_date 			    = fhir_patient.birthDate.to_date
   	@gender 					= fhir_patient.gender
-  	@marital_status 	= fhir_patient.maritalStatus
+  	@marital_status 	        = fhir_patient.maritalStatus
     @photo						= nil
-    @resourceType     = fhir_patient.resourceType
+    @resourceType               = fhir_patient.resourceType
 
-  	@fhir_client			= fhir_client
+  	@fhir_client			    = fhir_client
   end
 
   #-----------------------------------------------------------------------------
+  def careplans
+	# RJP
+    #puts ("TODO: - disable this stub. it needs to perform FHIR client lookup of associated care plans.")
+	# return careplans = [ OpenStruct.new({ :id => 1, :status => 'good', :period => 'end of week' }) ]
+	
+	careplans = []
+	search_param = { search: { parameters: { subject: [ "Patient", @id].join('/') } } }
+    resources = @fhir_client.search(FHIR::CarePlan, search_param).resource
+    unless resources.nil?
+      fhir_careplans = filter(resources.entry.map(&:resource), 'careplan')
+
+      fhir_careplans.each do |fhir_careplan|
+    	  careplans << careplan.new(fhir_careplan) unless fhir_careplan.nil?
+      end
+    end
+    return careplans
+  end
+  
 
   def medications
   	medications = []

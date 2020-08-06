@@ -10,7 +10,10 @@
 
 Rails.application.routes.draw do
 
-  resources :patients
+  resources :patients do
+	resources :care_plans
+  end
+
   resources :observations
   resources :practitioner_roles
   resources :contracts
@@ -20,11 +23,11 @@ Rails.application.routes.draw do
   resources :related_people
   resources :claims
   resources :service_requests
+  
   resources :goals
   resources :episode_of_cares
   resources :organizations
   resources :conditions
-  resources :care_plans
   resources :questionnaire_responses
   get 'questionnaire_responses/index'
   get 'questionnaire_responses/show'

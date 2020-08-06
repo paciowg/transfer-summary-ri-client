@@ -17,16 +17,30 @@ class CarePlansController < ApplicationController
     @care_plan = CarePlan.new(fhir_CarePlan, fhir_client) unless fhir_CarePlan.nil?
   end
 
-  # GET /care_plans/new
+  # GET /care_plans/new/1      
+  # NOTE:  added /1 to be a patientid because a CarePlan is
+  # a dependent object (i.e., it cannot exist without a subject).
+  # I don't know if that's what FHIR says.
+  
   def new
-    fhir_client = SessionHandler.fhir_client(session.id)
-    file = File.read('app/controllers/careplan1.json')
-    fhir_CarePlan = JSON.parse(file)
-    @care_plan = CarePlan.new(fhir_CarePlan, fhir_client)
+ # RJP Version
+     fhir_client = SessionHandler.fhir_client(session.id)
+ 	 @care_plan = CarePlan.new(FHIR::CarePlan.new, fhir_client)
+	 
+	 patient_id = params[:patient_id]
+	 fhir_patient = fhir_client.read(FHIR::Patient, patient_id).resource
+	 @patient = Patient.new(fhir_patient, fhir_client)
   end
 
   # GET /care_plans/1/edit
   def edit
+  # RJP Version
+    fhir_client = SessionHandler.fhir_client(session.id)
+    # RJP: I think this is debug code - I don't need it in my version.
+    # file = File.read('app/controllers/careplan1.json')
+    # fhir_CarePlan = JSON.parse(file, object_class: OpenStruct)   
+	fhir_CarePlan = fhir_client.read(FHIR::CarePlan, params[:id]).resource
+    @care_plan = CarePlan.new(fhir_CarePlan, fhir_client)
   end
 
   # POST /care_plans

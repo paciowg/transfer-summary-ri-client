@@ -17,6 +17,7 @@ class CarePlan < Resource
      #-----------------------------------------------------------------------------
 
      def initialize(fhir_carePlan, fhir_client)
+        # super fhir_carePlan
         @id = fhir_carePlan.id
         @status = fhir_carePlan.status
         @intent = fhir_carePlan.intent
@@ -73,11 +74,16 @@ class CarePlan < Resource
 
     def subject_names
         names = []
-        fhir_patient = @fhir_client.read(nil, get_type_and_id(subject.reference)).resource
-        fhir_patient.name.each do |name|
-            names << name
-        end
-        return names
+		
+		obj = @fhir_client.read(FHIR::Patient, 
+								get_type_and_id(@subject.reference))
+		if not obj.nil? 
+			fhir_patient = obj
+			fhir_patient.name.each do |name|
+				names << name
+			end
+		end
+		return names
     end
 
     def activities

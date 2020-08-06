@@ -14,6 +14,7 @@ class Goal < Resource
                 :subject
 
     def initialize(fhir_goal)
+        super
         @id = fhir_goal.id
         @description = fhir_goal.description
         @lifecycleStatus = fhir_goal.lifecycleStatus

@@ -79,13 +79,20 @@ class SessionHandler
   # *Returns* - This session's instance of FHIR::Client
 
   def self.fhir_client(session_id)
-    connection = from_storage(session_id, "connection")
-    if connection.nil?
-      establish(session_id)
+    val = nil
+    # the LOCAL_DATA variable now controls the use of a local file reading stub.
+    if ENV["LOCAL_DATA"].nil?
       connection = from_storage(session_id, "connection")
-    end
+      if connection.nil?
+        establish(session_id)
+        connection = from_storage(session_id, "connection")
+      end
 
-    connection.client
+      val = connection.client
+    else
+      val = LocalFhirReader::new(session_id)
+    end
+    val
   end
 
 
