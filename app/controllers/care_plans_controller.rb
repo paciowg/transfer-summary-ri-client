@@ -38,6 +38,10 @@ class CarePlansController < ApplicationController
     fhir_client = SessionHandler.fhir_client(session.id)
 	fhir_CarePlan = fhir_client.read(FHIR::CarePlan, params[:id]).resource
     @care_plan = CarePlan.new(fhir_CarePlan, fhir_client)
+
+	 patient_id = id_part(@care_plan.subject.reference)
+	 fhir_patient = fhir_client.read(FHIR::Patient, patient_id).resource
+	 @patient = Patient.new(fhir_patient, fhir_client)
   end
 
   # POST /care_plans

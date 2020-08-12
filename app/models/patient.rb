@@ -31,22 +31,15 @@ class Patient < Resource
 
   #-----------------------------------------------------------------------------
   def careplans
-	# RJP
-    #puts ("TODO: - disable this stub. it needs to perform FHIR client lookup of associated care plans.")
-	# return careplans = [ OpenStruct.new({ :id => 1, :status => 'good', :period => 'end of week' }) ]
-	
 	careplans = []
 	search_param = { search: { parameters: { subject: [ "Patient", @id].join('/') } } }
     resources = @fhir_client.search(FHIR::CarePlan, search_param).resource
     unless resources.nil?
-	 puts "RESOURCES IS NOT NIL"
       fhir_careplans = filter(resources.entry.map(&:resource), 'CarePlan')
 
       fhir_careplans.each do |fhir_careplan|
     	  careplans << CarePlan.new(fhir_careplan, @fhir_client) unless fhir_careplan.nil?
       end
-	else
-	  puts "RESOURCES IS NIL"
     end
     return careplans
   end

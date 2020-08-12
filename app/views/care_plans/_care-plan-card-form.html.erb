@@ -8,11 +8,7 @@
         <table class='table table-striped table-dark status'>
           <tr>
             <td>Patient</td>
-            <td><%= 
-			
-			# @patient.name.given does not work despite it being a  "HumanName" type.
-			
-			link_to @patient.name.first.given.join(" "), dashboard_path(patient: get_id(@patient.id)) %></td>
+            <td><%= link_to @patient.name.first.given.join(" "), dashboard_path(patient: get_id(@patient.id)) %></td>
           </tr>
           <tr>
             <td>id</td>
@@ -30,20 +26,32 @@
             <td>Status</td>
             <td>
 			<%= select_tag(:status, options_for_select([
-					['draft'],
-					['active'],
- 					['on-hold'],
-					['revoked'],
-					['completed'],
-					['entered-in-error'],
-					['unknown',]], @care_plan.status)) %>			
+															['draft'],
+															['active'],
+															['on-hold'],
+															['revoked'],
+															['completed'],
+															['entered-in-error'],
+															['unknown'],
+														], @care_plan.status))
+			%>			
 			</td>
           </tr>
           <tr>
             <td>Goals</td>
-            <td><%= @care_plan.goal %><br/>
+            <td>
+			<table>
+			<tr><th>Goal Reference</th></tr>
+			<% @care_plan.goal.each do |goal| 
+					gid = goal.reference.split("/")[1]
+			%>
+				<tr>
+					<td><%= link_to "Edit #{gid}", care_plan_goal_path(gid) %></td>
+				</tr>
+			<% end %>
+			</table>
+			<br/><%= link_to "Add a Goal", care_plan_goal_path(@care_plan.id) unless @care_plan.id.nil? %><br/>
 			
-			<%= link_to "Add a Goal", care_plan_goal_path(@care_plan.id) unless @care_plan.id.nil? %><br/>
 			</td>
           </tr>
           <tr>
@@ -52,7 +60,22 @@
           </tr>
           <tr>
             <td>Categories</td>
-            <td><%= @care_plan.category %></td>
+			
+			<td><table>
+			<tr><th>Coding System</th><th>Code</th></tr>
+			<% @care_plan.category.each do |category| 
+					category.coding.each do |coding|
+			%>
+				<tr>
+					<td><%= coding.system %></td>
+					<td><%= coding.code %></td>
+				</tr>
+			<%      
+					end
+			   end 
+			%>
+			</table></td>
+			
           </tr>
           <tr>
             <td>Subject</td>
@@ -67,17 +90,45 @@
             <td><%= @care_plan.conditions %></td>
           </tr>
           <tr>
-            <td>Activities</td>
-            <td><%= @care_plan.activity %></td>
+            <td>Activities (<%= @care_plan.activity.length %>)</td>
+		
+			<td><table>
+				<tr><th>Activity # </th><th>Reference</th><th>Description</th></tr>
+
+				<%
+					reference = description = ""
+					i = 0
+					@care_plan.activity.each do |activity| 
+						i = i + 1
+						if activity.reference.nil? then
+							reference = "N/A"
+						else
+							reference = activity.reference.reference
+						end
+						
+						if activity.detail.nil? then
+							description = "N/A"
+						else
+							description = activity.detail.description
+						end	
+					
+				%>
+				
+						<tr><td> <%= i %> </td><td><%= reference %> </td><td><%= description %></td></tr>
+			
+			    <%  
+					end
+				%>
+				
+			
+			</table></td>
           </tr>
           <tr>
-            <td>Contributors</td>
-            <td><%= @care_plan.contributor %></td>
+            <td>Contributors (<%= @care_plan.contributor.length %>)</td>
+            <td><%# @care_plan.contributor %>   Not Shown</td>
           </tr>
         </table>
       </div>
     </div>
-		<%#  incomplete CODE!!! %>
-		<% submit_tag "Save" %>
   </div>
 </div>

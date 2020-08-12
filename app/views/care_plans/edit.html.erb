@@ -1,6 +1,7 @@
+<br><br><br><br>
 <h1>Editing Care Plan</h1>
 
-<%= render 'form', care_plan: @care_plan %>
+<%= render 'form', care_plan: @care_plan, patient: @patient %>
 
-<%= link_to 'Show', @care_plan %> |
-<%= link_to 'Back', care_plans_path %>
+<%# link_to 'Show', @care_plan %> |
+<%= link_to 'Back', dashboard_path(@patient.id)  %>
