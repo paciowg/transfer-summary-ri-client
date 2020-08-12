@@ -73,11 +73,11 @@ class CarePlansController < ApplicationController
 
     respond_to do |format|
       if @care_plan.save
+# TODO: fix this hardcoded version.
 #        format.html { redirect_to @care_plan, notice: 'Care plan was successfully created.' }
 #        format.html { redirect_to dashboard_path(:patient => patient_id) }   # Alternatively, try this:
 # https://stackoverflow.com/questions/715179/passing-param-values-to-redirect-to-as-querystring-in-rails
 
-		puts" PATIENT_ID = '#{patient_id}'"
 		 format.html { redirect_to "/dashboard?patient=#{patient_id}" }
         format.json { render :show, status: :created, location: @care_plan }
       else

@@ -39,11 +39,14 @@ class Patient < Resource
 	search_param = { search: { parameters: { subject: [ "Patient", @id].join('/') } } }
     resources = @fhir_client.search(FHIR::CarePlan, search_param).resource
     unless resources.nil?
-      fhir_careplans = filter(resources.entry.map(&:resource), 'careplan')
+	 puts "RESOURCES IS NOT NIL"
+      fhir_careplans = filter(resources.entry.map(&:resource), 'CarePlan')
 
       fhir_careplans.each do |fhir_careplan|
-    	  careplans << careplan.new(fhir_careplan) unless fhir_careplan.nil?
+    	  careplans << CarePlan.new(fhir_careplan, @fhir_client) unless fhir_careplan.nil?
       end
+	else
+	  puts "RESOURCES IS NIL"
     end
     return careplans
   end
