@@ -1,6 +1,6 @@
+<br><br><br><br>
 <h1>New Care Plan</h1>
 
-<%# RJP: was render 'form' ... %>
-<%= render 'care-plan-card-form', locals: {:care_plan => @care_plan, :patient => @patient} %>
+<%= render 'form', care_plan: @care_plan, patient: @patient %>
 
 <%= link_to 'Back', dashboard_path(@patient.id) %>

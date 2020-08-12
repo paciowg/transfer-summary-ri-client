@@ -17,10 +17,9 @@ class CarePlansController < ApplicationController
     @care_plan = CarePlan.new(fhir_CarePlan, fhir_client) unless fhir_CarePlan.nil?
   end
 
-  # GET /care_plans/new/1      
-  # NOTE:  added /1 to be a patientid because a CarePlan is
-  # a dependent object (i.e., it cannot exist without a subject).
-  # I don't know if that's what FHIR says.
+  # GET /patients/:patient_id/care_plans/new
+  #
+  # Returns a form to enter a new care plan
   
   def new
  # RJP Version
@@ -33,31 +32,64 @@ class CarePlansController < ApplicationController
   end
 
   # GET /care_plans/1/edit
+  # produce a form for editing the care plan
   def edit
   # RJP Version
     fhir_client = SessionHandler.fhir_client(session.id)
-    # RJP: I think this is debug code - I don't need it in my version.
-    # file = File.read('app/controllers/careplan1.json')
-    # fhir_CarePlan = JSON.parse(file, object_class: OpenStruct)   
 	fhir_CarePlan = fhir_client.read(FHIR::CarePlan, params[:id]).resource
     @care_plan = CarePlan.new(fhir_CarePlan, fhir_client)
   end
 
   # POST /care_plans
   # POST /care_plans.json
+  # 
   def create
     fhir_client = SessionHandler.fhir_client(session.id)
-    @care_plan = CarePlan.new(care_plan_params, fhir_client)
+	patient_id = params[:patient_id]
+
+# TODO: This should be replaced with some kind of parameter fetching thing that
+# provides defaults as shown.
+	obj = OpenStruct.new
+	obj.id             = nil
+	obj.intent         = nil
+	obj.category       = []
+	obj.subject        = nil
+	obj.period         = nil
+	obj.author         = nil
+	obj.conditions     = [] 
+	obj.supportingInfo = nil
+	obj.goal           = []
+	obj.contributor    = []
+	obj.activity       = []
+	obj.title          = nil
+	
+	obj.subject = "Patient/#{patient_id}"
+	obj.description = params[:description]
+	obj.status = params[:status]
+	
+    @fhir_client = fhir_client
+
+    @care_plan = CarePlan.new(obj, fhir_client)
 
     respond_to do |format|
       if @care_plan.save
-        format.html { redirect_to @care_plan, notice: 'Care plan was successfully created.' }
+#        format.html { redirect_to @care_plan, notice: 'Care plan was successfully created.' }
+#        format.html { redirect_to dashboard_path(:patient => patient_id) }   # Alternatively, try this:
+# https://stackoverflow.com/questions/715179/passing-param-values-to-redirect-to-as-querystring-in-rails
+
+		puts" PATIENT_ID = '#{patient_id}'"
+		 format.html { redirect_to "/dashboard?patient=#{patient_id}" }
         format.json { render :show, status: :created, location: @care_plan }
       else
         format.html { render :new }
         format.json { render json: @care_plan.errors, status: :unprocessable_entity }
       end
     end
+  end
+
+  def v(x)
+	
+	rescue
   end
 
   # PATCH/PUT /care_plans/1
@@ -85,6 +117,11 @@ class CarePlansController < ApplicationController
   end
 
   private
+  
+	def id_part(resourceId)
+		resourceId.split("/")[1]
+	end
+  
     # Use callbacks to share common setup or constraints between actions.
     def set_care_plan
       @care_plan = CarePlan.find(params[:id])
@@ -92,6 +129,6 @@ class CarePlansController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def care_plan_params
-      params.fetch(:care_plan, {})
+      params.permit(:parent_id)
     end
 end

@@ -25,17 +25,11 @@ class CarePlan < Resource
         @subject = fhir_carePlan.subject
         @period = fhir_carePlan.period
         @author = fhir_carePlan.author
-        @conditions = fhir_carePlan.addresses
+        @conditions = begin fhir_carePlan.conditions rescue nil end
         @supportingInfo = fhir_carePlan.supportingInfo
         @goal = fhir_carePlan.goal
         @contributor = fhir_carePlan.contributor
         @activity = fhir_carePlan.activity
-        puts @activity
-        puts "PRINTING ACTIVITY ABOVE"
-        @activity.each do |thing| 
-            puts "PRINTING REF"
-            puts thing.detail.present?
-        end
         @title = fhir_carePlan.title
         @description = fhir_carePlan.description
 
@@ -107,4 +101,13 @@ class CarePlan < Resource
         activities << activity_objects
         return activities
     end
+	
+	def save
+	# TODO: need to post this back to server.
+	# returns true or false (true if saved)
+		obj = @fhir_client.update(@care_plan, begin @care_plan.id rescue nil end)
+
+		puts obj
+		obj
+	end
 end

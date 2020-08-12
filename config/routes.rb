@@ -11,7 +11,11 @@
 Rails.application.routes.draw do
 
   resources :patients do
-	resources :care_plans
+	resources :care_plans, only: [:new]
+  end
+  
+  resources :care_plans do
+	resources :goals
   end
 
   resources :observations
@@ -24,7 +28,6 @@ Rails.application.routes.draw do
   resources :claims
   resources :service_requests
   
-  resources :goals
   resources :episode_of_cares
   resources :organizations
   resources :conditions

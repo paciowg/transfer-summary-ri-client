@@ -12,11 +12,11 @@
 			
 			# @patient.name.given does not work despite it being a  "HumanName" type.
 			
-			link_to @patient.name, dashboard_path(patient: get_id(@patient.id)) %></td>
+			link_to @patient.name.first.given.join(" "), dashboard_path(patient: get_id(@patient.id)) %></td>
           </tr>
           <tr>
             <td>id</td>
-			<td> <%= @patient.id %> </td>
+			<td> <input name="patient_id" type="text" readonly value="<%= sanitize(@patient.id) %>"></input> </td>
           </tr>
           <tr>
             <td>Description</td>
@@ -37,6 +37,13 @@
 					['completed'],
 					['entered-in-error'],
 					['unknown',]], @care_plan.status)) %>			
+			</td>
+          </tr>
+          <tr>
+            <td>Goals</td>
+            <td><%= @care_plan.goal %><br/>
+			
+			<%= link_to "Add a Goal", care_plan_goal_path(@care_plan.id) unless @care_plan.id.nil? %><br/>
 			</td>
           </tr>
           <tr>
@@ -64,17 +71,13 @@
             <td><%= @care_plan.activity %></td>
           </tr>
           <tr>
-            <td>Goals</td>
-            <td><%= @care_plan.goal %><br>
-				<%= link_to "Add a Goal", "" %>
-			</td>
-          </tr>
-          <tr>
             <td>Contributors</td>
             <td><%= @care_plan.contributor %></td>
           </tr>
         </table>
       </div>
     </div>
+		<%#  incomplete CODE!!! %>
+		<% submit_tag "Save" %>
   </div>
 </div>

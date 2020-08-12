@@ -11,6 +11,17 @@
     </div>
   <% end %>
 
+  <table>
+  <tr>
+	<th>id</th>
+	<td><%= goal.id %></td>
+  </tr>
+  <tr>
+	<th>description</th>
+	<td><input type="text" name="goal" value="<%= goal.description %>"> </input></td>
+  </tr>
+  </table>
+
   <div class="actions">
     <%= form.submit %>
   </div>

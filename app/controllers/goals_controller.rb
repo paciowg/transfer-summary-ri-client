@@ -12,9 +12,18 @@ class GoalsController < ApplicationController
   def show
   end
 
-  # GET /goals/new
+  # GET /careplan/id/goals/new
   def new
-    @goal = Goal.new
+ # RJP Version- INCOMPLETE CODE!!!!!! REVIEW!!!!
+    fhir_client = SessionHandler.fhir_client(session.id)
+	@goal = Goal.new(FHIR::Goal.new, fhir_client)
+
+# CarePlan refers to Goal. 
+# Goal refers to subject (same as CarePlan)
+#		 
+	@goal.care_plan_id = params[:care_plan_id]
+	fhir_care_plan = fhir_client.read(FHIR::CarePlan, care_plan_id).resource
+	@goal.subject = fhir_care_plan.subject
   end
 
   # GET /goals/1/edit

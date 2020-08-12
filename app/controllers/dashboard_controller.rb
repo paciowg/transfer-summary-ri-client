@@ -13,7 +13,6 @@ class DashboardController < ApplicationController
     if patient_id.present?
       fhir_patient = SessionHandler.fhir_client(session.id).read(FHIR::Patient, patient_id).resource
 
-# RJP: why using new? shouldn't "show" be the action?
       @patient              = Patient.new(fhir_patient, SessionHandler.fhir_client(session.id))
       @medications          = @patient.medications
       @functional_statuses  = @patient.bundled_functional_statuses
