@@ -14,7 +14,7 @@ class Goal < Resource
                 :subject, 
 				:care_plan_id  # added in order to point back to the careplan
 
-    def initialize(fhir_client, fhir_goal)
+    def initialize(fhir_goal, fhir_client)
         
         @id = fhir_goal.id
         @description = fhir_goal.description

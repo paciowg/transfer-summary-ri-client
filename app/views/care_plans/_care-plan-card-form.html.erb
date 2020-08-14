@@ -40,8 +40,6 @@
           <tr>
             <td>Goals</td>
             <td>
-			<%#TODO: Move to a partial %>
- 
 			<table>
 			<tr> <th>Goal Reference</th><th>Coding</th><th>Text</th><th>Action</th> </tr>
 			<% 
@@ -71,11 +69,12 @@
             <td><%= sanitize(@care_plan.try(:intent))%></td>
           </tr>
           <tr>
-            <td>Categories</td>
+		  <% category = @care_plan.category # cache result. %>
+            <td>Categories (<%= category.length %>) </td>
 			
 			<td><table>
 			<tr><th>Coding System</th><th>Code</th></tr>
-			<% @care_plan.category.each do |category| 
+			<% category.each do |category| 
 					category.coding.each do |coding|
 			%>
 				<tr>
@@ -91,20 +90,21 @@
           </tr>
           <tr>
             <td>Subject</td>
-            <td><%= @care_plan.subject.reference %></td>
+            <td><%= begin @care_plan.subject.reference rescue "no subject recorded" end %></td>
           </tr>
           <tr>
             <td>Author</td>
-            <td><%= @care_plan.author.reference %></td>
+            <td><%= begin @care_plan.author.reference rescue "no author recorded" end %></td>
           </tr>
           <tr>
-            <td>Conditions</td>
+		  <% addresses = @care_plan.addresses  # cache result. %>
+            <td>Conditions (<%= addresses.length %>)</td>
             <td>
 			<table>
-			<tr> <th>Condition #</th> </tr>
+			<tr> <th>Condition #</th> <th>Coding System</th> <th>Code</th></tr>
 			<% 
 				i = 0
-				@care_plan.addresses.each do |condition| 
+				addresses.each do |condition| 
 					id = i + 1 # condition.reference.split("/")[1]
 			%>		
 				<tr>

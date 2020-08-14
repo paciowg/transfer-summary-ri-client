@@ -16,24 +16,24 @@ class CarePlan < Resource
 
      #-----------------------------------------------------------------------------
 
-     def initialize(fhir_carePlan, fhir_client)
+     def initialize(fhir_careplan, fhir_client)
         # super fhir_carePlan
-        @id = fhir_carePlan.id
-        @status = fhir_carePlan.status
-        @intent = fhir_carePlan.intent
-        @category = fhir_carePlan.category
-        @subject = fhir_carePlan.subject
-        @period = fhir_carePlan.period
-        @author = fhir_carePlan.author
-		@conditions = fhir_carePlan.addresses # NOTE: This is different on purpose. use the self.addresses method to get the list of conditions.
-        @supportingInfo = fhir_carePlan.supportingInfo
-        @goal = fhir_carePlan.goal
-        @contributor = fhir_carePlan.contributor
-        @activity = fhir_carePlan.activity
-        @title = fhir_carePlan.title
-        @description = fhir_carePlan.description
+        @id             = fhir_careplan.id
+        @status         = fhir_careplan.status
+        @intent         = fhir_careplan.intent
+        @category       = fhir_careplan.category
+        @subject        = fhir_careplan.subject
+        @period         = fhir_careplan.period
+        @author         = fhir_careplan.author
+		@conditions     = fhir_careplan.addresses # NOTE: This is different on purpose. use the self.addresses method to get the list of conditions.
+        @supportingInfo = fhir_careplan.supportingInfo
+        @goal           = fhir_careplan.goal
+        @contributor    = fhir_careplan.contributor
+        @activity       = fhir_careplan.activity
+        @title          = fhir_careplan.title
+        @description    = fhir_careplan.description
 
-        @fhir_client			= fhir_client
+        @fhir_client	= fhir_client
      end
 
      def fhir_client
@@ -61,7 +61,7 @@ class CarePlan < Resource
         goals = []
         goal.each do |subGoal|
             fhir_goal = @fhir_client.read(nil, get_type_and_id(subGoal.reference)).resource
-            goals << Goal.new(@fhir_client, fhir_goal)
+            goals << Goal.new(fhir_goal, @fhir_client)
         end
         return goals
     end
@@ -102,11 +102,43 @@ class CarePlan < Resource
         return activities
     end
 	
+	def makeFHIRCarePlan
+	
+	# so Populate a FHIR::CarePlan
+	# does this mean I need to create resource objects inside as well?
+		
+		cp = FHIR::CarePlan.new
+		
+        cp.id             = @id
+        cp.status         = @status
+        cp.intent         = @intent
+        cp.category       = @category
+        cp.subject        = @subject
+        cp.period         = @period
+        cp.author         = @author
+		cp.addresses      = @conditions
+        cp.supportingInfo = @supportingInfo
+        cp.goal           = @goal
+        cp.contributor    = @contributor
+        cp.activity       = @activity
+        cp.title          = @title
+        cp.description    = @description
+		
+		puts "DEBUG: CarePlan = #{cp}"
+		cp
+	end
+	
 	def save
 	# TODO: need to post this back to server.
 	# returns true or false (true if saved)
-		obj = @fhir_client.update(@care_plan, begin @care_plan.id rescue nil end)
+	# note: if you call it with an ID, it updates. If you don't, you still need a parameter because it barks
+	# missing param. So I used nil.
+	# 
+#		obj = @fhir_client.update(@care_plan, begin @care_plan.id rescue nil end)
 
+		cp  = makeFHIRCarePlan
+		obj = @fhir_client.create(cp)
+		
 		puts obj
 		obj
 	end
