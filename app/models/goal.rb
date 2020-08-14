@@ -14,8 +14,8 @@ class Goal < Resource
                 :subject, 
 				:care_plan_id  # added in order to point back to the careplan
 
-    def initialize(fhir_goal, fhir_client)
-        super
+    def initialize(fhir_client, fhir_goal)
+        
         @id = fhir_goal.id
         @description = fhir_goal.description
         @lifecycleStatus = fhir_goal.lifecycleStatus
@@ -26,6 +26,6 @@ class Goal < Resource
 		# TODO: note: @target should be defined, I think. Verify
 		
 		@care_plan_id = nil
-		@fhir_client			    = fhir_client
+		@fhir_client  = fhir_client
     end
 end

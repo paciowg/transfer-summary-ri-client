@@ -25,7 +25,7 @@ class CarePlan < Resource
         @subject = fhir_carePlan.subject
         @period = fhir_carePlan.period
         @author = fhir_carePlan.author
-        @conditions = begin fhir_carePlan.conditions rescue nil end
+		@conditions = fhir_carePlan.addresses # NOTE: This is different on purpose. use the self.addresses method to get the list of conditions.
         @supportingInfo = fhir_carePlan.supportingInfo
         @goal = fhir_carePlan.goal
         @contributor = fhir_carePlan.contributor
@@ -61,7 +61,7 @@ class CarePlan < Resource
         goals = []
         goal.each do |subGoal|
             fhir_goal = @fhir_client.read(nil, get_type_and_id(subGoal.reference)).resource
-            goals << Goal.new(fhir_goal)
+            goals << Goal.new(@fhir_client, fhir_goal)
         end
         return goals
     end

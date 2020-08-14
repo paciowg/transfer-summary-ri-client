@@ -40,15 +40,27 @@
           <tr>
             <td>Goals</td>
             <td>
+			<%#TODO: Move to a partial %>
+ 
 			<table>
-			<tr><th>Goal Reference</th></tr>
-			<% @care_plan.goal.each do |goal| 
-					gid = goal.reference.split("/")[1]
-			%>
+			<tr> <th>Goal Reference</th><th>Coding</th><th>Text</th><th>Action</th> </tr>
+			<% 
+				i = 0
+				@care_plan.goals.each do |goal| 
+					gid = i + 1 # goal.reference.split("/")[1]
+			%>		
 				<tr>
 					<td><%= link_to "Edit #{gid}", care_plan_goal_path(gid) %></td>
+					<td><%= goal.description.coding.join(",") %></td>
+					<td><%= goal.description.text %></td>
+					<td>
+					<%= link_to :delete, care_plan_goal_path(@care_plan.goal[i].reference)  # Remember - we need to delete from both care_plan AND goal.
+					%>
+					
+					</td>
 				</tr>
-			<% end %>
+			<% 	i+=1
+				end %>
 			</table>
 			<br/><%= link_to "Add a Goal", care_plan_goal_path(@care_plan.id) unless @care_plan.id.nil? %><br/>
 			
@@ -79,15 +91,32 @@
           </tr>
           <tr>
             <td>Subject</td>
-            <td><%= @care_plan.subject %></td>
+            <td><%= @care_plan.subject.reference %></td>
           </tr>
           <tr>
             <td>Author</td>
-            <td><%= @care_plan.author %></td>
+            <td><%= @care_plan.author.reference %></td>
           </tr>
           <tr>
             <td>Conditions</td>
-            <td><%= @care_plan.conditions %></td>
+            <td>
+			<table>
+			<tr> <th>Condition #</th> </tr>
+			<% 
+				i = 0
+				@care_plan.addresses.each do |condition| 
+					id = i + 1 # condition.reference.split("/")[1]
+			%>		
+				<tr>
+					<td><%= id %></td>
+					<td><%= condition.clinicalStatus.coding.map do |c| c.system end . join(',') %></td>
+					<td><%= condition.clinicalStatus.coding.map do |c| c.code end . join(',') %></td>
+				</tr>
+			<% 	i+=1
+				end %>
+			</table>
+			
+			</td>
           </tr>
           <tr>
             <td>Activities (<%= @care_plan.activity.length %>)</td>
@@ -125,7 +154,7 @@
           </tr>
           <tr>
             <td>Contributors (<%= @care_plan.contributor.length %>)</td>
-            <td><%# @care_plan.contributor %>   Not Shown</td>
+            <td><%= @care_plan.contributor.length == 0 ? "none" : "not shown" %></td>
           </tr>
         </table>
       </div>

@@ -38,10 +38,10 @@ class CarePlansController < ApplicationController
     fhir_client = SessionHandler.fhir_client(session.id)
 	fhir_CarePlan = fhir_client.read(FHIR::CarePlan, params[:id]).resource
     @care_plan = CarePlan.new(fhir_CarePlan, fhir_client)
-
-	 patient_id = id_part(@care_plan.subject.reference)
-	 fhir_patient = fhir_client.read(FHIR::Patient, patient_id).resource
-	 @patient = Patient.new(fhir_patient, fhir_client)
+	
+	patient_id = id_part(@care_plan.subject.reference)
+	fhir_patient = fhir_client.read(FHIR::Patient, patient_id).resource
+	@patient = Patient.new(fhir_patient, fhir_client)
   end
 
   # POST /care_plans
@@ -51,9 +51,7 @@ class CarePlansController < ApplicationController
     fhir_client = SessionHandler.fhir_client(session.id)
 	patient_id = params[:patient_id]
 
-# TODO: This should be replaced with some kind of parameter fetching thing that
-# provides defaults as shown.
-	obj = OpenStruct.new
+	obj = OpenStruct.new      # TODO: there must be a better way. 
 	obj.id             = nil
 	obj.intent         = nil
 	obj.category       = []
