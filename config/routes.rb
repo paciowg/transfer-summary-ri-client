@@ -34,6 +34,7 @@ Rails.application.routes.draw do
   get '/patients/show', to: 'dashboard#index'
   get '/home', to: 'home#index'
   get '/dashboard', to: 'dashboard#index'
+  get '/auth/token', to: 'home#index'
 
   root 'welcome#index'
 end

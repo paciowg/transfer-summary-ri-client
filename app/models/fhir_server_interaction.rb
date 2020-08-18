@@ -10,7 +10,7 @@ require 'oauth2'
 
 class FhirServerInteraction
 
-  def initialize(url = nil, oauth2_id = nil, oauth2_secret = nil)
+  def initialize(url = nil, oauth2_id = nil, oauth2_secret = nil, client = nil)
     # Default to HAPI's public testing FHIR server
     @base_server_url = DEFAULT_SERVER
   
@@ -18,28 +18,30 @@ class FhirServerInteraction
     # @oauth2_id = oauth2_id
     # @oauth2_secret = oauth2_secret
 
-    connect(url, oauth2_id, oauth2_secret)
+    connect(url, oauth2_id, oauth2_secret, client)
   end
 
   #-----------------------------------------------------------------------------
 
-  def connect(url = nil, oauth2_id = nil, oauth2_secret = nil)
+  def connect(url = nil, oauth2_id = nil, oauth2_secret = nil, client = nil)
     @base_server_url = url unless url.nil?
     @oauth2_id = oauth2_id unless oauth2_id.nil?
     @oauth2_secret = oauth2_secret unless oauth2_secret.nil?
+    @client = client
+    if client.nil?
+      @client = FHIR::Client.new(@base_server_url)
+      options = @client.get_oauth2_metadata_from_conformance
+      # options = { site: "http://localhost:3000", authorize_url: "http://localhost:8180/auth/realms/master/protocol/openid-connect/token", 
+                # token_url: "http://localhost:8180/auth/realms/master/protocol/openid-connect/token", raise_errors: true}
 
-    @client = FHIR::Client.new(@base_server_url)
-    # options = @client.get_oauth2_metadata_from_service_
-    options = { site: "http://localhost:3000", authorize_url: "http://localhost:8180/auth/realms/master/protocol/openid-connect/token", 
-                token_url: "http://localhost:8180/auth/realms/master/protocol/openid-connect/token", raise_errors: true}
-
-    unless options.blank?
-      @client.set_oauth2_auth(@oauth2_id, @oauth2_secret, options[:authorize_url], 
+      unless options.blank?
+        # redirect_to options[:authorize_url], response_type: 'code', client_id: ENV["CLIENT_ID"], redirect_uri: ENV["REDIRECT_URI"], scope: ENV["SCOPE"], state: SecureRandom.uuid, aud: url
+        @client.set_oauth2_auth(@oauth2_id, @oauth2_secret, options[:authorize_url], 
           options[:token_url], options[:site])
-      # client = OAuth2::Client.new(@oauth2_id, @oauth2_secret)
-      # client.auth_code.authorize_url(:redirect_uri => 'http://localhost:3000/home')
+        client = OAuth2::Client.new(@oauth2_id, @oauth2_secret, options)
+        client.auth_code.authorize_url(:redirect_uri => 'http://localhost:3000/home')
+      end
     end
-    # @client
     FHIR::Model.client = @client
   end
   
