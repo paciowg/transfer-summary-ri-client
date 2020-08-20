@@ -14,6 +14,7 @@ Rails.application.routes.draw do
 	resources :care_plans, only: [:new]
   end
   
+  match 'care_plans/:id/patient/:patient_id', to: 'care_plans#destroy', via: :delete
   resources :care_plans do
 	resources :goals
   end

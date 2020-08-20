@@ -1,6 +1,6 @@
 <div class='card bg-dark text-white'>
   <div class='card-header'>
-    <%= sanitize(@care_plan.title) %>
+   <%= sanitize(@care_plan.title) %>
   </div>
   <div class='card-body'>
     <div class='row patient-info'>
@@ -8,11 +8,15 @@
         <table class='table table-striped table-dark status'>
           <tr>
             <td>Patient</td>
-            <td><%= link_to @patient.name.first.given.join(" "), dashboard_path(patient: get_id(@patient.id)) %></td>
+            <td><%= link_to @patient.name.first.text, dashboard_path(patient: get_id(@patient.id)) %></td>
           </tr>
           <tr>
             <td>id</td>
 			<td> <input name="patient_id" type="text" readonly value="<%= sanitize(@patient.id) %>"></input> </td>
+          </tr>
+          <tr>
+            <td>Title</td>
+            <td> <input name="title" type="text" value="<%= sanitize(@care_plan.title) %>"></input> </td>
           </tr>
           <tr>
             <td>Description</td>
@@ -66,7 +70,16 @@
           </tr>
           <tr>
             <td>Intent</td>
-            <td><%= sanitize(@care_plan.try(:intent))%></td>
+			<td>
+			<%= select_tag(:intent, options_for_select([
+															['proposal'],
+															['plan'],
+															['order'],
+															['option'],
+														], @care_plan.intent))
+			%>	</td>		
+
+
           </tr>
           <tr>
 		  <% category = @care_plan.category # cache result. %>

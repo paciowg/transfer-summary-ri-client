@@ -1,6 +1,10 @@
 <br><br><br><br>
 <h1>New Care Plan</h1>
 
-<%= render 'form', care_plan: @care_plan, patient: @patient %>
+<%
+ # TODO: remove old way: render 'form', care_plan: @care_plan, patient: @patient 
+ 
+%>
+<%= render 'form' %>
 
 <%= link_to 'Back', dashboard_path(@patient.id) %>

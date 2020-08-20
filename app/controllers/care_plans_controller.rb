@@ -22,26 +22,31 @@ class CarePlansController < ApplicationController
   # Returns a form to enter a new care plan
   
   def new
- # RJP Version
      fhir_client = SessionHandler.fhir_client(session.id)
  	 @care_plan = CarePlan.new(FHIR::CarePlan.new, fhir_client)
 	 
 	 patient_id = params[:patient_id]
-	 fhir_patient = fhir_client.read(FHIR::Patient, patient_id).resource
+	 obj = fhir_client.read(FHIR::Patient, patient_id)
+	 raise "unable to read patient resource" unless obj.code == 200
+	 fhir_patient = obj.resource
 	 @patient = Patient.new(fhir_patient, fhir_client)
   end
 
   # GET /care_plans/1/edit
   # produce a form for editing the care plan
   def edit
-  # RJP Version
     fhir_client = SessionHandler.fhir_client(session.id)
-	fhir_CarePlan = fhir_client.read(FHIR::CarePlan, params[:id]).resource
+	obj = fhir_client.read(FHIR::CarePlan, params[:id])
+	raise "unable to read patient resource" unless obj.code == 200
+	fhir_CarePlan = obj.resource
     @care_plan = CarePlan.new(fhir_CarePlan, fhir_client)
 	
 	patient_id = id_part(@care_plan.subject.reference)
-	fhir_patient = fhir_client.read(FHIR::Patient, patient_id).resource
+	obj = fhir_client.read(FHIR::Patient, patient_id)
+	raise "unable to read patient resource" unless obj.code == 200
+	fhir_patient = obj.resource
 	@patient = Patient.new(fhir_patient, fhir_client)
+	
   end
 
   # POST /care_plans
@@ -51,27 +56,11 @@ class CarePlansController < ApplicationController
     fhir_client = SessionHandler.fhir_client(session.id)
 	patient_id = params[:patient_id]
 
-	obj = OpenStruct.new      # TODO: there must be a better way. 
-	obj.id             = nil
-	obj.intent         = nil
-	obj.category       = []
-	obj.subject        = nil
-	obj.period         = nil
-	obj.author         = nil
-	obj.conditions     = [] 
-	obj.supportingInfo = nil
-	obj.goal           = []
-	obj.contributor    = []
-	obj.activity       = []
-	obj.title          = nil
-	
-	obj.subject = "Patient/#{patient_id}"
-	obj.description = params[:description]
-	obj.status = params[:status]
+	cp = care_plan_from_params(params)
 	
     @fhir_client = fhir_client
 
-    @care_plan = CarePlan.new(obj, fhir_client)
+    @care_plan = CarePlan.new(cp, fhir_client)
 
     respond_to do |format|
       if @care_plan.save
@@ -89,11 +78,6 @@ class CarePlansController < ApplicationController
     end
   end
 
-  def v(x)
-	
-	rescue
-  end
-
   # PATCH/PUT /care_plans/1
   # PATCH/PUT /care_plans/1.json
   def update
@@ -108,12 +92,18 @@ class CarePlansController < ApplicationController
     end
   end
 
-  # DELETE /care_plans/1
+  # DELETE /care_plans/1/patient/2
   # DELETE /care_plans/1.json
   def destroy
-    @care_plan.destroy
+	id = params[:id]
+	patient_id = params[:patient_id]
+    fhir_client = SessionHandler.fhir_client(session.id)
+    CarePlan::destroy(fhir_client, id)
+	
+	
+	
     respond_to do |format|
-      format.html { redirect_to care_plans_url, notice: 'Care plan was successfully destroyed.' }
+      format.html { redirect_to "/dashboard?patient=#{patient_id}", notice: 'Care plan was successfully removed.' }
       format.json { head :no_content }
     end
   end
@@ -131,6 +121,45 @@ class CarePlansController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def care_plan_params
-      params.permit(:parent_id)
+      params.permit(:patient_id)
     end
+	
+	# creates a FHIR::CarePlan from params
+	def care_plan_from_params(params)
+
+## TODO: change to FHIR::CarePlan_eltss
+		
+		default_category = FHIR::CodeableConcept.new
+		default_category.coding = FHIR::Coding.new
+		default_category.coding.system = "http://hl7.org/fhir/us/core/CodeSystem/careplan-category"
+		default_category.coding.code   = "assess-plan"
+		
+		obj = FHIR::CarePlan.new
+		# obj = OpenStruct.new      # TODO: there must be a better way. 
+		
+		obj.id             = begin params[:id] rescue nil end
+		obj.category       = [ default_category ]
+		
+		obj.subject = FHIR::Reference.new
+		obj.subject.type   = "Patient" # TODO: Should this be Patient_eltss ?
+		obj.subject.reference = "#{obj.subject.type}/#{params[:patient_id]}"
+		
+		obj.period         = nil
+		obj.author         = begin params[:author] rescue nil end
+		obj.addresses      = []    
+		obj.supportingInfo = nil
+		obj.goal           = []
+		obj.contributor    = []
+		obj.activity       = []
+		obj.title          = params[:title]
+		obj.description    = params[:description]
+		obj.status         = begin params[:status].match(/^(draft|active|suspended|completed|entered-in-error|cancelled|unknown)$/) || nil rescue nil end
+		obj.intent         = begin params[:intent].match(/^(proposal|plan|order|option)$/) || nil rescue nil end
+		begin
+		obj.text           = params[:text]
+		rescue # else ignore .text (because this isn't a FHIR::CarePlan_eltss ??
+		end
+		
+		return obj
+	end
 end

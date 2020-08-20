@@ -12,7 +12,7 @@ class CarePlan < Resource
 
     attr_reader :id, :status, :intent, :category, :subject, :period,
                 :author, :conditions, :supportingInfo, :goal,
-                :contributor, :activity, :title, :description
+                :contributor, :activity, :title, :description, :text
 
      #-----------------------------------------------------------------------------
 
@@ -20,21 +20,35 @@ class CarePlan < Resource
         # super fhir_carePlan
         @id             = fhir_careplan.id
         @status         = fhir_careplan.status
-        @intent         = fhir_careplan.intent
+        @intent         = fhir_careplan.intent    # required.
         @category       = fhir_careplan.category
         @subject        = fhir_careplan.subject
         @period         = fhir_careplan.period
         @author         = fhir_careplan.author
-		@conditions     = fhir_careplan.addresses # NOTE: This is different on purpose. use the self.addresses method to get the list of conditions.
+		@conditions     = fhir_careplan.addresses # NOTE: This is different on purpose. use the self.addresses method to get the list of conditions. Also, this will be a list of Reference(Condition_eltss)
         @supportingInfo = fhir_careplan.supportingInfo
         @goal           = fhir_careplan.goal
         @contributor    = fhir_careplan.contributor
         @activity       = fhir_careplan.activity
         @title          = fhir_careplan.title
         @description    = fhir_careplan.description
-
+		
+		# eltss specific resources:
+		begin  # attempt to get text from the careplan
+			@text           = fhir_careplan.text
+		rescue # use defaults below if unavailable
+			@text           = FHIR::Narrative.new
+			@text.status    = "empty"
+			@text.div       = ""
+		end
+		
+		# for convenience
         @fhir_client	= fhir_client
      end
+
+	 def clone_from_params(params)
+		raise "unimplemented"
+	 end
 
      def fhir_client
         @fhir_client
@@ -102,11 +116,31 @@ class CarePlan < Resource
         return activities
     end
 	
-	def makeFHIRCarePlan
+	def self.destroy(fhir_client, id)
+		obj = fhir_client.destroy(FHIR::CarePlan, id)
+		raise "unable to delete CarePlan got HTTP status of #{obj.code}" unless obj.code == 200
+	end
+
+	def destroy
+		CarePlan::destroy(@fhir_client,@id)
+	end
 	
-	# so Populate a FHIR::CarePlan
-	# does this mean I need to create resource objects inside as well?
+	def save
+		cp  = makeFHIRCarePlan
+		obj = @fhir_client.create(cp)
 		
+		if obj.response[:code] == 201 then
+			puts "CarePlan#save - successfully created."
+		else
+			puts "CarePlan#save - failure - http code was #{obj.response[:code]}"
+		end
+
+		return obj.response[:code] == 201
+	end
+	
+	private
+	
+	def makeFHIRCarePlan
 		cp = FHIR::CarePlan.new
 		
         cp.id             = @id
@@ -123,23 +157,12 @@ class CarePlan < Resource
         cp.activity       = @activity
         cp.title          = @title
         cp.description    = @description
-		
-		puts "DEBUG: CarePlan = #{cp}"
+		begin # try to set
+		cp.text           = @text
+		rescue # otherwise ignore this field.
+		end
+
 		cp
 	end
 	
-	def save
-	# TODO: need to post this back to server.
-	# returns true or false (true if saved)
-	# note: if you call it with an ID, it updates. If you don't, you still need a parameter because it barks
-	# missing param. So I used nil.
-	# 
-#		obj = @fhir_client.update(@care_plan, begin @care_plan.id rescue nil end)
-
-		cp  = makeFHIRCarePlan
-		obj = @fhir_client.create(cp)
-		
-		puts obj
-		obj
-	end
 end
