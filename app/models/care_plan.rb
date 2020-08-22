@@ -12,7 +12,11 @@ class CarePlan < Resource
 
     attr_reader :id, :status, :intent, :category, :subject, :period,
                 :author, :conditions, :supportingInfo, :goal,
-                :contributor, :activity, :title, :description, :text
+                :contributor, :activity, :title, :description, :text, 
+				# Rails attributes
+				:errors, 
+				:destroyed
+	attr_accessor :new_record
 
      #-----------------------------------------------------------------------------
 
@@ -44,6 +48,9 @@ class CarePlan < Resource
 		
 		# for convenience
         @fhir_client	= fhir_client
+		@errors = []
+		@destroyed = false
+		@new_record = true
      end
 
 	 def clone_from_params(params)
@@ -118,7 +125,10 @@ class CarePlan < Resource
 	
 	def self.destroy(fhir_client, id)
 		obj = fhir_client.destroy(FHIR::CarePlan, id)
-		raise "unable to delete CarePlan got HTTP status of #{obj.code}" unless obj.code == 200
+		@errors << "unable to delete CarePlan got HTTP status of #{obj.code}"
+		raise errors.last unless [200,202,204, 405, 409].include?(obj.code.to_i)
+		# warn "not allowed to delete CarePlan (HTTP status of #{obj.code}" if [405, 409].include?(obj.code.to_i)
+		@destroyed = true
 	end
 
 	def destroy
@@ -127,15 +137,28 @@ class CarePlan < Resource
 	
 	def save
 		cp  = makeFHIRCarePlan
-		obj = @fhir_client.create(cp)
-		
-		if obj.response[:code] == 201 then
-			puts "CarePlan#save - successfully created."
+		if cp.id.nil? then
+			obj = @fhir_client.create(cp)
+			action = 'created'
 		else
-			puts "CarePlan#save - failure - http code was #{obj.response[:code]}"
+			obj = @fhir_client.update(cp, cp.id)
+			action = 'updated'
+		end
+		http_code = obj.response[:code].to_i
+		ok = [200, 201].include?(http_code)
+		if ok then
+			puts "CarePlan#save - successfully #{action}. http code was #{http_code}"
+			@persisted = true
+		else
+			puts "CarePlan#save - failed to #{action} - http code was #{http_code}"
 		end
 
-		return obj.response[:code] == 201
+		return ok
+	end
+	
+# used by rails to determine to create new record or update existing record.	
+	def persisted?
+		!(@destroyed || @new_record)
 	end
 	
 	private

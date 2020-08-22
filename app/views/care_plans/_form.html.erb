@@ -16,7 +16,9 @@
 
 
   <div class="actions">
-    <%= form.submit %>
+    <%= form.submit "Save Care Plan" %>
+	<%= link_to 'Back', dashboard_path(@patient.id) %>
   </div>
+  
   <br><br>
 <% end %>

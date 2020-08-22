@@ -4,7 +4,8 @@ class CarePlansController < ApplicationController
   # GET /care_plans
   # GET /care_plans.json
   def index
-    @care_plans = CarePlan.all
+	redirect_to :dashboard
+    # @care_plans = CarePlan.all
   end
 
   # GET /care_plans/1
@@ -40,16 +41,16 @@ class CarePlansController < ApplicationController
 	raise "unable to read patient resource" unless obj.code == 200
 	fhir_CarePlan = obj.resource
     @care_plan = CarePlan.new(fhir_CarePlan, fhir_client)
+	@care_plan.new_record = false
 	
 	patient_id = id_part(@care_plan.subject.reference)
 	obj = fhir_client.read(FHIR::Patient, patient_id)
 	raise "unable to read patient resource" unless obj.code == 200
 	fhir_patient = obj.resource
 	@patient = Patient.new(fhir_patient, fhir_client)
-	
   end
 
-  # POST /care_plans
+  # POST /care_plans/:patient_id   (needed for redirect.)
   # POST /care_plans.json
   # 
   def create
@@ -72,7 +73,7 @@ class CarePlansController < ApplicationController
 		 format.html { redirect_to "/dashboard?patient=#{patient_id}" }
         format.json { render :show, status: :created, location: @care_plan }
       else
-        format.html { render :new }
+#        format.html { render :new }
         format.json { render json: @care_plan.errors, status: :unprocessable_entity }
       end
     end
@@ -81,9 +82,19 @@ class CarePlansController < ApplicationController
   # PATCH/PUT /care_plans/1
   # PATCH/PUT /care_plans/1.json
   def update
+    fhir_client = SessionHandler.fhir_client(session.id)
+	patient_id = params[:patient_id]
+
+	cp = care_plan_from_params(params)
+	
+    @care_plan = CarePlan.new(cp, fhir_client)
+
+# make sure there's an @care_plan.id
+	byebug
+	
     respond_to do |format|
-      if @care_plan.update(care_plan_params)
-        format.html { redirect_to @care_plan, notice: 'Care plan was successfully updated.' }
+      if @care_plan.save
+        format.html { redirect_to "/dashboard?patient=#{patient_id}", notice: 'Care plan was successfully updated.' }
         format.json { render :show, status: :ok, location: @care_plan }
       else
         format.html { render :edit }

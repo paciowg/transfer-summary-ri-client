@@ -10,6 +10,7 @@ class DashboardController < ApplicationController
 
   def index
     patient_id = params[:patient]
+	
     if patient_id.present?
       obj = SessionHandler.fhir_client(session.id).read(FHIR::Patient, patient_id)
 	  
