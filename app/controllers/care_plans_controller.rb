@@ -86,12 +86,8 @@ class CarePlansController < ApplicationController
 	patient_id = params[:patient_id]
 
 	cp = care_plan_from_params(params)
-	
     @care_plan = CarePlan.new(cp, fhir_client)
 
-# make sure there's an @care_plan.id
-	byebug
-	
     respond_to do |format|
       if @care_plan.save
         format.html { redirect_to "/dashboard?patient=#{patient_id}", notice: 'Care plan was successfully updated.' }
