@@ -1,6 +1,6 @@
 body {
-	background-color: #020;
-	color: #eee;
+	background-color: /* #020 */ #61D8D8 ;
+	color: #eee; /* red */
 	padding-bottom: 20px;
   }
   
@@ -50,11 +50,12 @@ body {
   }
   
   .bg-dark {
-	background-color: #244a30 !important;
+	background-color: /* #244a30 */ #7272FF !important;
   }
   
   .table-dark {
-	background-color: #244a30;
+	background-color: /* #244a30 */ #21FFFF ;
+	color: black;
   }
   
   .table-dark th, .table-dark td, .table-dark thead th {
