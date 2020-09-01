@@ -1,5 +1,5 @@
 class CarePlansController < ApplicationController
-  # before_action :set_care_plan, only: [:show, :edit, :update, :destroy]
+  before_action :set_fhir_client, only: [:new, :show, :edit, :create, :update, :destroy, :edit_goal]
 
   # GET /care_plans
   # GET /care_plans.json
@@ -11,11 +11,12 @@ class CarePlansController < ApplicationController
   # GET /care_plans/1
   # GET /care_plans/1.json
   def show
-    fhir_client = SessionHandler.fhir_client(session.id)
-    fhir_CarePlan = fhir_client.read(FHIR::CarePlan, params[:id]).resource
+    fhir_CarePlan = @fhir_client.read(FHIR::CarePlan, params[:id]).resource
     # file = File.read('app/controllers/careplan1.json')
     # fhir_CarePlan = JSON.parse(file)
-    @care_plan = CarePlan.new(fhir_CarePlan, fhir_client) unless fhir_CarePlan.nil?
+    @care_plan = CarePlan.new(fhir_CarePlan, @fhir_client) unless fhir_CarePlan.nil?
+	
+	# TODO: replace and test all this with: @care_plan = CarePlan.getById(@fhir_client, params[:id])
   end
 
   # GET /patients/:patient_id/care_plans/new
@@ -23,45 +24,25 @@ class CarePlansController < ApplicationController
   # Returns a form to enter a new care plan
   
   def new
-     fhir_client = SessionHandler.fhir_client(session.id)
- 	 @care_plan = CarePlan.new(FHIR::CarePlan.new, fhir_client)
-	 
-	 patient_id = params[:patient_id]
-	 obj = fhir_client.read(FHIR::Patient, patient_id)
-	 raise "unable to read patient resource" unless obj.code == 200
-	 fhir_patient = obj.resource
-	 @patient = Patient.new(fhir_patient, fhir_client)
+ 	 @care_plan = CarePlan.new(FHIR::CarePlan.new, @fhir_client)
+	 @patient = Patient.getById(@fhir_client, params[:patient_id])
   end
 
   # GET /care_plans/1/edit
   # produce a form for editing the care plan
   def edit
-    fhir_client = SessionHandler.fhir_client(session.id)
-	obj = fhir_client.read(FHIR::CarePlan, params[:id])
-	raise "unable to read patient resource" unless obj.code == 200
-	fhir_CarePlan = obj.resource
-    @care_plan = CarePlan.new(fhir_CarePlan, fhir_client)
-	@care_plan.new_record = false
-	
-	patient_id = id_part(@care_plan.subject.reference)
-	obj = fhir_client.read(FHIR::Patient, patient_id)
-	raise "unable to read patient resource" unless obj.code == 200
-	fhir_patient = obj.resource
-	@patient = Patient.new(fhir_patient, fhir_client)
+	@care_plan = CarePlan.getById(@fhir_client, params[:id])
+	@patient = Patient.getById(@fhir_client, id_part(@care_plan.subject.reference))
   end
 
   # POST /care_plans/:patient_id   (needed for redirect.)
   # POST /care_plans.json
   # 
   def create
-    fhir_client = SessionHandler.fhir_client(session.id)
 	patient_id = params[:patient_id]
 
 	cp = care_plan_from_params(params)
-	
-    @fhir_client = fhir_client
-
-    @care_plan = CarePlan.new(cp, fhir_client)
+    @care_plan = CarePlan.new(cp, @fhir_client)
 
     respond_to do |format|
       if @care_plan.save
@@ -70,7 +51,7 @@ class CarePlansController < ApplicationController
 #        format.html { redirect_to dashboard_path(:patient => patient_id) }   # Alternatively, try this:
 # https://stackoverflow.com/questions/715179/passing-param-values-to-redirect-to-as-querystring-in-rails
 
-		 format.html { redirect_to "/dashboard?patient=#{patient_id}" }
+		format.html { redirect_to "/dashboard?patient=#{patient_id}" }
         format.json { render :show, status: :created, location: @care_plan }
       else
 #        format.html { render :new }
@@ -82,11 +63,10 @@ class CarePlansController < ApplicationController
   # PATCH/PUT /care_plans/1
   # PATCH/PUT /care_plans/1.json
   def update
-    fhir_client = SessionHandler.fhir_client(session.id)
 	patient_id = params[:patient_id]
 
 	cp = care_plan_from_params(params)
-    @care_plan = CarePlan.new(cp, fhir_client)
+    @care_plan = CarePlan.new(cp, @fhir_client)
 
     respond_to do |format|
       if @care_plan.save
@@ -104,23 +84,46 @@ class CarePlansController < ApplicationController
   def destroy
 	id = params[:id]
 	patient_id = params[:patient_id]
-    fhir_client = SessionHandler.fhir_client(session.id)
-    CarePlan::destroy(fhir_client, id)
-	
-	
+
+    success = CarePlan::destroy(@fhir_client, id)
 	
     respond_to do |format|
-      format.html { redirect_to "/dashboard?patient=#{patient_id}", notice: 'Care plan was successfully removed.' }
+      format.html { redirect_to "/dashboard?patient=#{patient_id}", notice: "Care plan was #{ success ? '' : 'not' } successfully removed." }
       format.json { head :no_content }
     end
   end
+  
+    # GET /careplans/:care_plan_id/goals/:id/edit
+  def edit_goal
+	id = params[:id]
+	care_plan_id = params[:care_plan_id]
+	
+	obj = @fhir_client.read(FHIR::Goal, id)
+	raise "unable to read object due to http code #{obj.code}" if obj.code.to_i != 200
+	
+	fhir_goal = obj.resource
+	
+	@goal = Goal.new(fhir_goal, @fhir_client, nil)    # we don't have a careplan at this stage.
+	@goal.care_plan_id = care_plan_id    # needed to return back to this form.
+	
+    # render :show, status: :created, location: @goal
+	render template: "goals/edit", model: @goal
+
+  end
+
 
   private
   
 	def id_part(resourceId)
-		resourceId.split("/")[1]
+		resourceId.split("/").second
 	end
   
+	# Rails filter.
+    def set_fhir_client
+	  @fhir_client = SessionHandler.fhir_client(session.id)
+    end
+
+	# Rails filter.
     # Use callbacks to share common setup or constraints between actions.
     def set_care_plan
       @care_plan = CarePlan.find(params[:id])
@@ -132,6 +135,20 @@ class CarePlansController < ApplicationController
     end
 	
 	# creates a FHIR::CarePlan from params
+	
+	def get_clean_id
+		begin 
+			id = params[:id]
+			if id.empty? then 
+				nil 
+			else 
+				id 
+			end
+		rescue 
+			nil 
+		end
+	end
+	
 	def care_plan_from_params(params)
 
 ## TODO: change to FHIR::CarePlan_eltss
@@ -144,7 +161,7 @@ class CarePlansController < ApplicationController
 		obj = FHIR::CarePlan.new
 		# obj = OpenStruct.new      # TODO: there must be a better way. 
 		
-		obj.id             = begin params[:id] rescue nil end
+		obj.id             = get_clean_id
 		obj.category       = [ default_category ]
 		
 		obj.subject = FHIR::Reference.new
@@ -166,6 +183,22 @@ class CarePlansController < ApplicationController
 		obj.text           = params[:text]
 		rescue # else ignore .text (because this isn't a FHIR::CarePlan_eltss ??
 		end
+		
+		# process checkboxes to create list of References to Goals.
+		#
+		goals = []
+		params.each do |k,v|
+		
+			if k.match(/^check_(.*)$/)
+				goal_id = $~[1]
+				g = FHIR::Reference.new
+				g.type = "Goals"  # TODO: Should this be Goal_eltss ?
+				g.reference = "Goal/#{goal_id}"
+				goals << g
+			end
+		end
+		
+		obj.goal = goals
 		
 		return obj
 	end

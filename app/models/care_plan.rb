@@ -11,17 +11,12 @@ class CarePlan < Resource
     include ActiveModel::Model
 
     attr_reader :id, :status, :intent, :category, :subject, :period,
-                :author, :conditions, :supportingInfo, :goal,
-                :contributor, :activity, :title, :description, :text, 
-				# Rails attributes
-				:errors, 
-				:destroyed
-	attr_accessor :new_record
-
+                :author, :conditions, :supportingInfo,
+                :contributor, :activity, :title, :description, :text
+	attr_accessor :fhir_client, :goal
      #-----------------------------------------------------------------------------
 
      def initialize(fhir_careplan, fhir_client)
-        # super fhir_carePlan
         @id             = fhir_careplan.id
         @status         = fhir_careplan.status
         @intent         = fhir_careplan.intent    # required.
@@ -29,7 +24,9 @@ class CarePlan < Resource
         @subject        = fhir_careplan.subject
         @period         = fhir_careplan.period
         @author         = fhir_careplan.author
-		@conditions     = fhir_careplan.addresses # NOTE: This is different on purpose. use the self.addresses method to get the list of conditions. Also, this will be a list of Reference(Condition_eltss)
+		# NOTE: This is different on purpose. use the self.addresses method to get the list of conditions. 
+		#       Also, this will be a list of Reference(Condition_eltss)
+		@conditions     = fhir_careplan.addresses 
         @supportingInfo = fhir_careplan.supportingInfo
         @goal           = fhir_careplan.goal
         @contributor    = fhir_careplan.contributor
@@ -48,17 +45,11 @@ class CarePlan < Resource
 		
 		# for convenience
         @fhir_client	= fhir_client
-		@errors = []
+		
+		# Rails lifecycle support
+		@new_record = @id.nil?
 		@destroyed = false
-		@new_record = true
-     end
 
-	 def clone_from_params(params)
-		raise "unimplemented"
-	 end
-
-     def fhir_client
-        @fhir_client
      end
 
      def get_type_and_id(url)
@@ -82,9 +73,25 @@ class CarePlan < Resource
         goals = []
         goal.each do |subGoal|
             fhir_goal = @fhir_client.read(nil, get_type_and_id(subGoal.reference)).resource
-            goals << Goal.new(fhir_goal, @fhir_client)
+            goals << Goal.new(fhir_goal, @fhir_client, @id)
         end
         return goals
+    end
+	
+	# return allgoals for this careplan's subject.
+
+    def allgoals
+	goals = []
+	search_param = { search: { parameters: { subject: subject.reference } } }
+    resources = @fhir_client.search(FHIR::Goal, search_param).resource
+    unless resources.nil?
+      fhir_goals = filter(resources.entry.map(&:resource), 'Goal')
+
+      fhir_goals.each do |fhir_goal|
+    	  goals << Goal.new(fhir_goal, @fhir_client, @id) unless fhir_goal.nil?
+      end
+    end
+    return goals
     end
 
     def subject_names
@@ -123,16 +130,19 @@ class CarePlan < Resource
         return activities
     end
 	
+	# return true if successfully destroyed
 	def self.destroy(fhir_client, id)
-		obj = fhir_client.destroy(FHIR::CarePlan, id)
-		@errors << "unable to delete CarePlan got HTTP status of #{obj.code}"
-		raise errors.last unless [200,202,204, 405, 409].include?(obj.code.to_i)
-		# warn "not allowed to delete CarePlan (HTTP status of #{obj.code}" if [405, 409].include?(obj.code.to_i)
-		@destroyed = true
+		return [200,202,204, 405, 409].include?(fhir_client.destroy(FHIR::CarePlan, id).code )
 	end
 
 	def destroy
-		CarePlan::destroy(@fhir_client,@id)
+		obj = CarePlan::destroy(@fhir_client,@id)
+		if obj then
+			@destroyed = true
+		else
+			@errors << "unable to delete CarePlan got HTTP status of #{obj.code}"
+			raise errors.last 
+		end
 	end
 	
 	def save
@@ -156,12 +166,25 @@ class CarePlan < Resource
 		return ok
 	end
 	
-# used by rails to determine to create new record or update existing record.	
-	def persisted?
-		!(@destroyed || @new_record)
-	end
+	 def self.getById(fhir_client, care_plan_id)
+		obj = fhir_client.read(FHIR::CarePlan, care_plan_id)
+		raise "unable to read care plan resource" unless obj.code == 200
+		fhir_CarePlan = obj.resource
+		return CarePlan.new(fhir_CarePlan, fhir_client)
+	 end
+
 	
-	private
+	
+  #-----------------------------------------------------------------------------
+  private
+  #-----------------------------------------------------------------------------
+
+  def filter(fhir_resources, type)
+    fhir_resources.select do |resource| 
+    	resource.resourceType == type
+    end
+  end
+
 	
 	def makeFHIRCarePlan
 		cp = FHIR::CarePlan.new

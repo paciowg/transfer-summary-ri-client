@@ -27,6 +27,11 @@ class Patient < Resource
     @resourceType               = fhir_patient.resourceType
 
   	@fhir_client			    = fhir_client
+  
+	# Rails lifecycle support
+	@new_record = @id.nil?
+	@destroyed = false
+
   end
 
   #-----------------------------------------------------------------------------
@@ -136,6 +141,19 @@ class Patient < Resource
     age.to_s
   end
 
+# used by rails to determine to create new record or update existing record.	
+	def persisted?
+		!(@destroyed || @new_record)
+	end
+	
+	def self.getById(fhir_client, patient_id)
+		obj = fhir_client.read(FHIR::Patient, patient_id)
+		raise "unable to read patient resource" unless obj.code == 200
+		fhir_patient = obj.resource
+		
+		return Patient.new(fhir_patient, fhir_client)
+	end
+	
   #-----------------------------------------------------------------------------
   private
   #-----------------------------------------------------------------------------

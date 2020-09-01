@@ -14,11 +14,14 @@ Rails.application.routes.draw do
 	resources :care_plans, only: [:new]
   end
   
-  match 'care_plans/:id/patient/:patient_id', to: 'care_plans#destroy', via: :delete
-  resources :care_plans do
-	resources :goals
-  end
-
+  match 'care_plans/:id/patient/:patient_id', to: 'care_plans#destroy', via: :delete   # TODO: check this URL.
+  match '/patients/:patient_id/care_plans/:care_plan_id/goals/new', to: 'goals#new', via: :get
+  match '/care_plans/:care_plan_id/goals/:id/edit', to: 'care_plans#edit_goal', via: :get
+  resources :care_plans 
+  
+  match '/goals', to: 'goals#create', via: :patch
+  resources :goals, only: [:show, :edit, :create]  # deletion is prohibited.
+  
   resources :observations
   resources :practitioner_roles
   resources :contracts

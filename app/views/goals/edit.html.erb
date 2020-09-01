@@ -1,6 +1,5 @@
 <h1>Editing Goal</h1>
 
-<%= render 'form', goal: @goal %>
+<%= render 'goals/form', goal: @goal %>
 
-<%= link_to 'Show', @goal %> |
-<%= link_to 'Back', goals_path %>
+<%= link_to 'Back', "/care_plans/#{@goal.care_plan_id}" %>
