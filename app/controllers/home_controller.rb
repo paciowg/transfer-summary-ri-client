@@ -19,7 +19,7 @@ class HomeController < ApplicationController
       
     else
       @code = params[:code]
-      if @code.present?
+      if @code.present? && params[:state] == Rails.cache.read("state_value")
         @token_params = {:grant_type => 'authorization_code', :code => @code, :redirect_uri => ENV["REDIRECT_URI"], :client_id => ENV["CLIENT_ID"]}
         @token_url = Rails.cache.read("token_url")
         @response = Net::HTTP.post_form URI(@token_url), @token_params
@@ -34,7 +34,9 @@ class HomeController < ApplicationController
         Rails.cache.write("base_server_url", params[:server_url], { expires_in: 30.minutes })
         options = @client.get_oauth2_metadata_from_conformance
         unless options.blank?
-          @params = {:response_type => 'code', :client_id => ENV["CLIENT_ID"], :redirect_uri => ENV["REDIRECT_URI"], :scope => ENV["SCOPE"], :state => SecureRandom.uuid, :aud => @base_server_url }
+          @state_value = SecureRandom.uuid
+          Rails.cache.write("state_value", @state_value, { expires_in: 30.minutes })
+          @params = {:response_type => 'code', :client_id => ENV["CLIENT_ID"], :redirect_uri => ENV["REDIRECT_URI"], :scope => ENV["SCOPE"], :state => @state_value, :aud => @base_server_url }
           @authorize_url = options[:authorize_url] + "?" + @params.to_query
           Rails.cache.write("token_url", options[:token_url], { expires_in: 30.minutes })
           Rails.cache.write("authorize_url", options[:authorize_url], { expires_in: 30.minutes })
