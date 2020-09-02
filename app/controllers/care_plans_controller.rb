@@ -24,8 +24,11 @@ class CarePlansController < ApplicationController
   # Returns a form to enter a new care plan
   
   def new
- 	 @care_plan = CarePlan.new(FHIR::CarePlan.new, @fhir_client)
-	 @patient = Patient.getById(@fhir_client, params[:patient_id])
+	 patient_id = params[:patient_id]
+   	 @care_plan = CarePlan.new(FHIR::CarePlan.new, @fhir_client)
+	 @patient = Patient.getById(@fhir_client, patient_id)
+	 @care_plan.subject = FHIR::Reference.new
+	 @care_plan.subject.reference = "Patient/#{patient_id}"
   end
 
   # GET /care_plans/1/edit

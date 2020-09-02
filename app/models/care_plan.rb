@@ -10,9 +10,10 @@
 class CarePlan < Resource
     include ActiveModel::Model
 
-    attr_reader :id, :status, :intent, :category, :subject, :period,
+    attr_reader :id, :status, :intent, :category, :period,
                 :author, :conditions, :supportingInfo,
                 :contributor, :activity, :title, :description, :text
+	attr_accessor :subject
 	attr_accessor :fhir_client, :goal
      #-----------------------------------------------------------------------------
 
@@ -82,7 +83,7 @@ class CarePlan < Resource
 
     def allgoals
 	goals = []
-	search_param = { search: { parameters: { subject: subject.reference } } }
+	search_param = { search: { parameters: { subject: @subject.reference } } }
     resources = @fhir_client.search(FHIR::Goal, search_param).resource
     unless resources.nil?
       fhir_goals = filter(resources.entry.map(&:resource), 'Goal')
