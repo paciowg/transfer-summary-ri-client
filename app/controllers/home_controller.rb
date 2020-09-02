@@ -23,7 +23,8 @@ class HomeController < ApplicationController
 
       # Temporary code to pull only the patient that has cognitive and functional
       # status in the default server.
-      if SessionHandler.from_storage(session.id, "connection").base_server_url == DEFAULT_SERVER
+	  # TODO: Ron - disabled default server logic.
+      if false or SessionHandler.from_storage(session.id, "connection").base_server_url == DEFAULT_SERVER
         searchParam = { search: { parameters: { _id: 'cms-patient-01' } } }
         bundle = SessionHandler.fhir_client(session.id).search(FHIR::Patient, searchParam).resource
       else
@@ -47,8 +48,11 @@ class HomeController < ApplicationController
 
         err = "Connection failed: Ensure provided url points to a valid FHIR server"
         err += " that holds at least one patient"
+		
+		puts "Found 0 patients"
         redirect_to root_path, flash: { error: err }
       else
+		puts "Found #{@patients.size} patients"
         # Cache the results so we don't burden the server.
         Rails.cache.write("patients", @patients, expires_in: 1.hour)
       end

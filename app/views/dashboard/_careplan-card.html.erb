@@ -4,6 +4,7 @@
   </div>
 
   <div class='card-body'>
+  <div id="table-div">
     <table class='table table-striped table-dark status'>
         <tr>
 		  <th>Care Plan</th>
@@ -22,11 +23,11 @@
         </tr>
       <% end %>
     </table>
-	<div>
+	</div>
+	<div id="action-div">
+	<br/>
 	<p>
-	Actions:
-	
-	<%= link_to "Add New Care Plan",  new_patient_care_plan_path(@patient.id) %>
+	Actions: <%= link_to "Add New Care Plan",  new_patient_care_plan_path(@patient.id) %>
 	</p>
 	</div>
   </div>

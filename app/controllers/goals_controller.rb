@@ -44,8 +44,7 @@ class GoalsController < ApplicationController
 
   # GET /careplans/:care_plan_id/goals/:id/edit
   def edit
-    byebug  # you SHOULD NEVER REACH HERE!
-	if false
+	if false  # you should never reach here.
 	id = params[:id]
 	obj = @fhir_client.read(FHIR::Goal, id)
 	raise "unable to read object due to http code #{obj.code}" if obj.code.to_i != 200
@@ -54,7 +53,6 @@ class GoalsController < ApplicationController
 	
 	@goal = Goal.new(fhir_goal, @fhir_client, nil)    # we don't have a careplan at this stage.
 	puts "Goal id = #{@goal.id}"
-	byebug
 	end
   end
 

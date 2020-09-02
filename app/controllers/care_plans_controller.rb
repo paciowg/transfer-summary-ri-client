@@ -177,7 +177,7 @@ class CarePlansController < ApplicationController
 		obj.activity       = []
 		obj.title          = params[:title]
 		obj.description    = params[:description]
-		obj.status         = begin params[:status].match(/^(draft|active|suspended|completed|entered-in-error|cancelled|unknown)$/) || nil rescue nil end
+		obj.status         = begin params[:status].match(/^(draft|active|on-hold|revoked|completed|entered-in-error|unknown)$/) || nil rescue nil end
 		obj.intent         = begin params[:intent].match(/^(proposal|plan|order|option)$/) || nil rescue nil end
 		begin
 		obj.text           = params[:text]
