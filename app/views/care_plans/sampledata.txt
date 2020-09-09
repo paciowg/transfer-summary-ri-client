@@ -1,0 +1,20 @@
+[#<FHIR::CarePlan::Activity:0x0000000031aaa240 
+	@id=nil, @extension=[], @modifierExtension=[], @outcomeCodeableConcept=[], @outcomeReference=[], @progress=[], @reference=nil, 
+		@detail=
+			#<FHIR::CarePlan::Activity::Detail:0x0000000031aa9bb0 @id=nil, @extension=[], @modifierExtension=[], @kind=nil, @instantiatesCanonical=[], @instantiatesUri=[], @code=nil, @reasonCode=[], @reasonReference=[], 
+			@goal=
+				[#<FHIR::Reference:0x0000000031aa9480 @id=nil, @extension=[], @reference="Goal/goal1", @type=nil, @identifier=nil, @display=nil>],
+
+			@status="not-started", @statusReason=nil, @doNotPerform=nil, @scheduledTiming=nil, @scheduledPeriod=nil, @scheduledString=nil, @location=nil, @performer=[], @productCodeableConcept=nil, @productReference=nil, @dailyAmount=nil, @quantity=nil, @description="Perform exercises to improve balance skills">>,
+		
+#<FHIR::CarePlan::Activity:0x0000000031aa8800 @id=nil, @extension=[], @modifierExtension=[], @outcomeCodeableConcept=[], @outcomeReference=[], @progress=[], @reference=nil, 
+	@detail=
+		#<FHIR::CarePlan::Activity::Detail:0x0000000031aa8260 @id=nil, @extension=[], @modifierExtension=[], @kind=nil, @instantiatesCanonical=[], @instantiatesUri=[], @code=nil, @reasonCode=[], @reasonReference=[], 
+			@goal=
+				[#<FHIR::Reference:0x0000000031ab7af8 @id=nil, @extension=[], @reference="Goal/goal2", @type=nil, @identifier=nil, @display=nil>],
+			@status="not-started", @statusReason=nil, @doNotPerform=nil, @scheduledTiming=nil, @scheduledPeriod=nil, @scheduledString=nil, @location=nil, @performer=[], @productCodeableConcept=nil, @productReference=nil, @dailyAmount=nil, @quantity=nil, @description="Work on mobility to dance at son's upcoming wedding">>, 
+
+#<FHIR::CarePlan::Activity:0x0000000031ab6630 @id=nil, @extension=[], @modifierExtension=[], @outcomeCodeableConcept=[], @outcomeReference=[], @progress=[], @reference=#<FHIR::Reference:0x0000000031ab60e0 @id=nil, @extension=[], @reference="ServiceRequest/service1", @type=nil, @identifier=nil, @display=nil>, @detail=nil>, 
+
+#<FHIR::CarePlan::Activity:0x0000000031ab55c8 @id=nil, @extension=[], @modifierExtension=[], @outcomeCodeableConcept=[], @outcomeReference=[], @progress=[], @reference=#<FHIR::Reference:0x0000000031ab52d0 @id=nil, @extension=[], @reference="ServiceRequest/service2", @type=nil, @identifier=nil, @display=nil>, @detail=nil>, 
+#<FHIR::CarePlan::Activity:0x0000000031ab4b50 @id=nil, @extension=[], @modifierExtension=[], @outcomeCodeableConcept=[], @outcomeReference=[], @progress=[], @reference=#<FHIR::Reference:0x0000000031ab48d0 @id=nil, @extension=[], @reference="ServiceRequest/service3", @type=nil, @identifier=nil, @display=nil>, @detail=nil>, #<FHIR::CarePlan::Activity:0x0000000031ab4218 @id=nil, @extension=[], @modifierExtension=[], @outcomeCodeableConcept=[], @outcomeReference=[], @progress=[], @reference=#<FHIR::Reference:0x0000000031abfd70 @id=nil, @ext

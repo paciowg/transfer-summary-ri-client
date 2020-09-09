@@ -16,20 +16,39 @@ class Patient < Resource
   #-----------------------------------------------------------------------------
 
   def initialize(fhir_patient, fhir_client)
-    @id               = fhir_patient.id
+    @id                         = fhir_patient.id
   	@name 						= fhir_patient.name
-  	@telecoms 				= fhir_patient.telecom
-  	@addresses 				= fhir_patient.address
-  	@birth_date 			= fhir_patient.birthDate.to_date
+  	@telecoms 				    = fhir_patient.telecom
+  	@addresses 				    = fhir_patient.address
+  	@birth_date 			    = fhir_patient.birthDate.to_date
   	@gender 					= fhir_patient.gender
-  	@marital_status 	= fhir_patient.maritalStatus
+  	@marital_status 	        = fhir_patient.maritalStatus
     @photo						= nil
-    @resourceType     = fhir_patient.resourceType
+    @resourceType               = fhir_patient.resourceType
 
-  	@fhir_client			= fhir_client
+  	@fhir_client			    = fhir_client
+  
+	# Rails lifecycle support
+	@new_record = @id.nil?
+	@destroyed = false
+
   end
 
   #-----------------------------------------------------------------------------
+  def careplans
+	careplans = []
+	search_param = { search: { parameters: { subject: [ "Patient", @id].join('/') } } }
+    resources = @fhir_client.search(FHIR::CarePlan, search_param).resource
+    unless resources.nil?
+      fhir_careplans = filter(resources.entry.map(&:resource), 'CarePlan')
+
+      fhir_careplans.each do |fhir_careplan|
+    	  careplans << CarePlan.new(fhir_careplan, @fhir_client) unless fhir_careplan.nil?
+      end
+    end
+    return careplans
+  end
+  
 
   def medications
   	medications = []
@@ -122,6 +141,19 @@ class Patient < Resource
     age.to_s
   end
 
+# used by rails to determine to create new record or update existing record.	
+	def persisted?
+		!(@destroyed || @new_record)
+	end
+	
+	def self.getById(fhir_client, patient_id)
+		obj = fhir_client.read(FHIR::Patient, patient_id)
+		raise "unable to read patient resource" unless obj.code == 200
+		fhir_patient = obj.resource
+		
+		return Patient.new(fhir_patient, fhir_client)
+	end
+	
   #-----------------------------------------------------------------------------
   private
   #-----------------------------------------------------------------------------

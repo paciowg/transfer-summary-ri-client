@@ -9,7 +9,9 @@
 ################################################################################
 
 class Resource
-
+	attr_accessor :errors, :warnings
+	
+	
   # Adds a warning message to the specified resource
 
   def warning(message)
@@ -25,5 +27,5 @@ class Resource
     @errors = [] unless @errors.present?
     @errors.append(message)
   end
-
+  
 end
