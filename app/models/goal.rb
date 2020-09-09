@@ -46,7 +46,8 @@ class Goal < Resource
 	
 	def save
 		g  = makeFHIRGoal
-		if g.id.nil? then
+		if g.id.nil? or g.id == '' or g.id == 'not yet assigned' then
+			g.id = nil
 			obj = @fhir_client.create(g)
 			action = 'created'
 		else
