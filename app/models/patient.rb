@@ -91,13 +91,11 @@ class Patient < Resource
 
   	fhir_bundle = @fhir_client.search(FHIR::Observation, search_param).resource
     fhir_functional_statuses = filter(fhir_bundle.entry.map(&:resource), 'Observation')
-    # puts fhir_functional_statuses
+
   	fhir_functional_statuses.each do |fhir_functional_status|
       bundled_functional_statuses << BundledFunctionalStatus.new(fhir_functional_status) unless 
                                                           fhir_functional_status.nil?
     end
-    puts "PRINTING FUNC STATUSES"
-    puts bundled_functional_statuses
 
   	return bundled_functional_statuses
   end

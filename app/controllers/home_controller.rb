@@ -23,7 +23,7 @@ class HomeController < ApplicationController
 
       # Temporary code to pull only the patient that has cognitive and functional
       # status in the default server.
-	  # TODO: Ron - disabled default server logic.
+	  # TODO: Ron - disabled default server logic. - this seems to be hardcoded by someone.
       if false or SessionHandler.from_storage(session.id, "connection").base_server_url == DEFAULT_SERVER
         searchParam = { search: { parameters: { _id: 'cms-patient-01' } } }
         bundle = SessionHandler.fhir_client(session.id).search(FHIR::Patient, searchParam).resource

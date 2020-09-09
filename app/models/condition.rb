@@ -22,7 +22,5 @@ class Condition < Resource
         @category = fhir_condition.category
         @code = fhir_condition.code
         @subject = fhir_condition.subject
-        puts "CLINICAL STATUS"
-        puts @clinicalStatus
      end
 end

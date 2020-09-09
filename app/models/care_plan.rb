@@ -55,8 +55,6 @@ class CarePlan < Resource
 
      def get_type_and_id(url)
 		components = url.split('/')
-		puts components
-		puts "GETTING TYPE"
 		max_index = components.length - 1
 		return [components[max_index-1], components[max_index]].join('/')
     end
@@ -114,13 +112,9 @@ class CarePlan < Resource
         activity_details = []
         activity_objects = []
         @activity.each do |activity_ref|
-            # TODO: This is hacky stuff but I'm not sure there's a better option doable by one engineer
             if activity_ref.detail.present?
                 activity_details << activity_ref
             else
-                # activity_objects << activity_ref
-                puts "PRINTING REFERENCE"
-                puts activity_ref.reference
                 fhir_activity = @fhir_client.read(nil, get_type_and_id(activity_ref.reference.reference)).resource
                 class_string = get_type_and_id(activity_ref.reference.reference).split('/')[0].constantize
                 activity_objects << class_string.new(fhir_activity)
@@ -158,7 +152,6 @@ class CarePlan < Resource
 		http_code = obj.response[:code].to_i
 		ok = [200, 201].include?(http_code)
 		if ok then
-			puts "CarePlan#save - successfully #{action}. http code was #{http_code}"
 			@persisted = true
 		else
 			puts "CarePlan#save - failed to #{action} - http code was #{http_code}"

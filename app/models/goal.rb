@@ -59,10 +59,9 @@ class Goal < Resource
 		http_code = obj.response[:code].to_i
 		ok = [200, 201].include?(http_code)
 		if ok then
-			puts "Goal#save - successfully #{action}. http code was #{http_code}"
 			@new_record = false
 		else
-			puts "Goal#save - failed to #{action} - http code was #{http_code}"
+			puts "ERROR: Goal#save - failed to #{action} - http code was #{http_code}"
 		end
 
 # disable for now - we may not want this to be automatic.

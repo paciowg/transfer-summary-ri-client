@@ -52,7 +52,6 @@ class GoalsController < ApplicationController
 	fhir_goal = obj.resource
 	
 	@goal = Goal.new(fhir_goal, @fhir_client, nil)    # we don't have a careplan at this stage.
-	puts "Goal id = #{@goal.id}"
 	end
   end
 
@@ -156,9 +155,9 @@ class GoalsController < ApplicationController
 		end
 		
 		obj.subject           = FHIR::Reference.new
-		obj.subject.type      = "Patient" # TODO: Should this be Patient_eltss ?
-		obj.subject.reference = subjectrefstr  #SECURITY: validate
-		obj.lifecycleStatus   = params[:lifecycleStatus]  # SECURITY: validate
+		obj.subject.type      = "Patient" 
+		obj.subject.reference = subjectrefstr  
+		obj.lifecycleStatus   = params[:lifecycleStatus]  
 		obj.priority          = begin if params[:priority].match(/^(high-priority|medium-priority|low-priority|n\/a)$/) then
 											if params[:priority] == 'n/a' then
 												nil
