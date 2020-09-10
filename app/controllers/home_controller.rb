@@ -23,7 +23,6 @@ class HomeController < ApplicationController
         @token_params = {:grant_type => 'authorization_code', :code => @code, :redirect_uri => ENV["REDIRECT_URI"], :client_id => ENV["CLIENT_ID"]}
         @token_url = Rails.cache.read("token_url")
         @response = Net::HTTP.post_form URI(@token_url), @token_params
-        puts @response.body
         @token = JSON.parse(@response.body)["access_token"]
         @base_server_url = Rails.cache.read("base_server_url")
         @client = FHIR::Client.new(@base_server_url)
@@ -49,7 +48,6 @@ class HomeController < ApplicationController
     # @client = @SessionHandler.client
     # Get list of patients from cached results from server
     @patients = Rails.cache.read("patients")
-
     @patients = nil
     if @patients.nil?
       # No cached patients, either because it's the first time or the cache
@@ -67,7 +65,6 @@ class HomeController < ApplicationController
         @client.additional_headers = {Accept: 'application/json+fhir; fhirVersion=4.0'}
         bundle = @client.search(FHIR::Patient).resource
         care_plan_bundle = @client.search(FHIR::CarePlan).resource
-
         @care_plans = care_plan_bundle.entry.collect{ | singleEntry| singleEntry.resource } unless care_plan_bundle.nil?
         if @care_plans.nil?
           puts "error collecting care plans"
@@ -82,11 +79,8 @@ class HomeController < ApplicationController
 
         err = "Connection failed: Ensure provided url points to a valid FHIR server"
         err += " that holds at least one patient"
-		
-		puts "Found 0 patients"
         redirect_to root_path, flash: { error: err }
       else
-		puts "Found #{@patients.size} patients"
         # Cache the results so we don't burden the server.
         Rails.cache.write("patients", @patients, expires_in: 1.hour)
       end

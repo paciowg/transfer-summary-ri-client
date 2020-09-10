@@ -118,7 +118,7 @@ class CarePlansController < ApplicationController
   private
   
 	def id_part(resourceId)
-		resourceId.split("/").second
+		resourceId.split("/").last
 	end
   
 	# Rails filter.

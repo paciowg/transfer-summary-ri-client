@@ -57,19 +57,21 @@ class Patient < Resource
     search_param = 	{ search: 
     									{ parameters: 
     										{
-                          patient: ["Patient", @id].join('/'),
-                          _include: ['MedicationRequest:medication'],
+                          subject: ["Patient", @id].join('/'),
+                          _include: ['MedicationRequest:medication', 'MedicationRequest:requester'],
                           _count: 10
     										} 
     									} 
     								}
 
-    fhir_bundle = @fhir_client.search(FHIR::Medication, search_param).resource
+    fhir_bundle = @fhir_client.search(FHIR::MedicationRequest, search_param).resource
     unless fhir_bundle.nil?
       fhir_medications = filter(fhir_bundle.entry.map(&:resource), 'Medication')
+      fhir_medication_requests = filter(fhir_bundle.entry.map(&:resource), 'MedicationRequest')
+      fhir_requesters = filter(fhir_bundle.entry.map(&:resource), 'Practitioner')
 
-      fhir_medications.each do |fhir_medication|
-    	  medications << Medication.new(fhir_medication) unless fhir_medication.nil?
+      fhir_medication_requests.each do |fhir_medication_request|
+    	  medications << Medication.new(fhir_medication_request, fhir_medications, fhir_requesters) unless fhir_medication_request.nil?
       end
     end
     return medications
@@ -84,7 +86,7 @@ class Patient < Resource
   										{ parameters:
   											{ 
                           patient: @id,
-                          _profile: 'http://pacioproject.org/StructureDefinition/pacio-bfs' 
+                          _profile: 'https://paciowg.github.io/functional-status-ig/StructureDefinition/pacio-bfs' 
                         }
   										}
   									}
@@ -111,7 +113,7 @@ class Patient < Resource
   										{ parameters:
   											{ 
                           patient: @id,
-                          _profile: 'http://pacioproject.org/StructureDefinition/pacio-bcs' 
+                          _profile: 'https://paciowg.github.io/cognitive-status-ig/StructureDefinition/pacio-bcs' 
                         }
   										}
   									}
@@ -146,7 +148,8 @@ class Patient < Resource
 		!(@destroyed || @new_record)
 	end
 	
-	def self.getById(fhir_client, patient_id)
+  def self.getById(fhir_client, patient_id)
+    puts "PATIENT_ID: ", patient_id
 		obj = fhir_client.read(FHIR::Patient, patient_id)
 		raise "unable to read patient resource" unless obj.code == 200
 		fhir_patient = obj.resource
