@@ -16,7 +16,6 @@ class CarePlansController < ApplicationController
     # fhir_CarePlan = JSON.parse(file)
     @care_plan = CarePlan.new(fhir_CarePlan, @fhir_client) unless fhir_CarePlan.nil?
 	
-	# TODO: replace and test all this with: @care_plan = CarePlan.getById(@fhir_client, params[:id])
   end
 
   # GET /patients/:patient_id/care_plans/new
@@ -49,11 +48,6 @@ class CarePlansController < ApplicationController
 
     respond_to do |format|
       if @care_plan.save
-# TODO: fix this hardcoded version.
-#        format.html { redirect_to @care_plan, notice: 'Care plan was successfully created.' }
-#        format.html { redirect_to dashboard_path(:patient => patient_id) }   # Alternatively, try this:
-# https://stackoverflow.com/questions/715179/passing-param-values-to-redirect-to-as-querystring-in-rails
-
 		format.html { redirect_to "/dashboard?patient=#{patient_id}" }
         format.json { render :show, status: :created, location: @care_plan }
       else
@@ -65,6 +59,11 @@ class CarePlansController < ApplicationController
 
   # PATCH/PUT /care_plans/1
   # PATCH/PUT /care_plans/1.json
+  
+  #
+  # DEFECT: update should not create a new careplan from scratch but rather it should update an existing careplan, pulled from the server.
+  # Today, I create a new one and it doesn't have all the necessary fields.
+  #
   def update
 	patient_id = params[:patient_id]
 
@@ -153,22 +152,18 @@ class CarePlansController < ApplicationController
 	end
 	
 	def care_plan_from_params(params)
-
-## TODO: change to FHIR::CarePlan_eltss
-		
 		default_category = FHIR::CodeableConcept.new
 		default_category.coding = FHIR::Coding.new
 		default_category.coding.system = "http://hl7.org/fhir/us/core/CodeSystem/careplan-category"
 		default_category.coding.code   = "assess-plan"
 		
 		obj = FHIR::CarePlan.new
-		# obj = OpenStruct.new      # TODO: there must be a better way. 
 		
 		obj.id             = get_clean_id
 		obj.category       = [ default_category ]
 		
 		obj.subject = FHIR::Reference.new
-		obj.subject.type   = "Patient" # TODO: Should this be Patient_eltss ?
+		obj.subject.type   = "Patient"
 		obj.subject.reference = "#{obj.subject.type}/#{params[:patient_id]}"
 		
 		obj.period         = nil
@@ -195,7 +190,7 @@ class CarePlansController < ApplicationController
 			if k.match(/^check_(.*)$/)
 				goal_id = $~[1]
 				g = FHIR::Reference.new
-				g.type = "Goals"  # TODO: Should this be Goal_eltss ?
+				g.type = "Goals"
 				g.reference = "Goal/#{goal_id}"
 				goals << g
 			end

@@ -146,7 +146,21 @@ class CarePlan < Resource
 			obj = @fhir_client.create(cp)
 			action = 'created'
 		else
-			obj = @fhir_client.update(cp, cp.id)
+		byebug
+			result = fhir_client.read(nil, "CarePlan/#{cp.id}");
+			if (result.code.to_i != 200) then
+				raise "unable to read prior care plan to perform update. care plan not updated."
+			end
+			prior_cp = result.resource
+
+	# merge in the fields we actually change in our UI.
+			prior_cp.status = @status         
+			prior_cp.intent = @intent         
+			prior_cp.goal = @goal           
+			prior_cp.title = @title          
+			prior_cp.description = @description    
+
+			obj = @fhir_client.update(prior_cp, cp.id)
 			action = 'updated'
 		end
 		http_code = obj.response[:code].to_i
