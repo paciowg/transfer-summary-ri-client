@@ -1,0 +1,19 @@
+
+<head>
+  <%= favicon_link_tag 'pacio-logo.png' %>
+  <title>Transfer Summary</title>
+	<%= csrf_meta_tags %>
+	<%= csp_meta_tag %>
+
+	<%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'reload' %>
+	<%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %>
+
+    <%# contents of _head.html.erb above %>
+    <%# DataTables specific headers below %>
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
+    <script src=cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js></script>
+    <%# DataTables specific headers above %>
+
+</head>
+
+

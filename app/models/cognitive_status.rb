@@ -10,7 +10,7 @@ class CognitiveStatus < Resource
 
 	include ActiveModel::Model
 
-	attr_reader :id, :text, :status, :code, :subject, :effective_datetime, :value
+	attr_reader :id, :text, :status, :code, :subject, :effective_datetime, :value, :dataAbsentReason
 
   #-----------------------------------------------------------------------------
 
@@ -22,6 +22,7 @@ class CognitiveStatus < Resource
 		@subject							= fhir_cognitive_status.subject
 		@effective_datetime		= DateTime.parse(fhir_cognitive_status.effectiveDateTime)
 		@value								= fhir_cognitive_status.valueCodeableConcept
+		@dataAbsentReason 					= fhir_cognitive_status.dataAbsentReason
 	end
 
 end

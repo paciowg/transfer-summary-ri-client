@@ -10,7 +10,18 @@
 
 Rails.application.routes.draw do
 
-  resources :patients
+  resources :patients do
+	resources :care_plans, only: [:new]
+  end
+  
+  match 'care_plans/:id/patient/:patient_id', to: 'care_plans#destroy', via: :delete   # TODO: check this URL.
+  match '/patients/:patient_id/care_plans/:care_plan_id/goals/new', to: 'goals#new', via: :get
+  match '/care_plans/:care_plan_id/goals/:id/edit', to: 'care_plans#edit_goal', via: :get
+  resources :care_plans 
+  
+  match '/goals', to: 'goals#create', via: :patch
+  resources :goals, only: [:show, :edit, :create]  # deletion is prohibited.
+  
   resources :observations
   resources :practitioner_roles
   resources :contracts
@@ -20,11 +31,10 @@ Rails.application.routes.draw do
   resources :related_people
   resources :claims
   resources :service_requests
-  resources :goals
+  
   resources :episode_of_cares
   resources :organizations
   resources :conditions
-  resources :care_plans
   resources :questionnaire_responses
   get 'questionnaire_responses/index'
   get 'questionnaire_responses/show'

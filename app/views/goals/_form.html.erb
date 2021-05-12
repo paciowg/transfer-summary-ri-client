@@ -1,17 +1,68 @@
-<%= form_with(model: goal, local: true) do |form| %>
-  <% if goal.errors.any? %>
-    <div id="error_explanation">
-      <h2><%= pluralize(goal.errors.count, "error") %> prohibited this goal from being saved:</h2>
+<div class='card bg-dark text-white'>
+  <div class='card-header'>
+   <%= "Goal Edit"%>
+  </div>
+  <div class='card-body'>
+    <div class='row patient-info'>
+      <div class='col-6'>
 
-      <ul>
-      <% goal.errors.full_messages.each do |message| %>
-        <li><%= message %></li>
-      <% end %>
-      </ul>
-    </div>
-  <% end %>
+
+<%= form_with(model: @goal, local: true, url: "/goals") do |form| %>
+	<% if @goal.errors.any? %>
+		<div id="error_explanation">
+		<h2><%= pluralize(@goal.errors.count, "error") %> prohibited this goal from being saved:</h2>
+
+		<ul>
+			<% @goal.errors.full_messages.each do |message| %>
+			<li><%= message %></li>
+			<% end %>
+		</ul>
+		</div>
+	<% end %>
+
+	<input type="hidden" name="care_plan_id" value="<%= @goal.care_plan_id %>"></input>
+	
+        <table class='table table-striped table-dark status'>
+	<tr>
+		<th><%= label_tag :id %></th>
+		<td><input name="id" type="text" readonly value="<%= @goal.id || "not yet assigned"%>"></input></td>
+	</tr>
+	<tr>
+		<th><%= label_tag :subject %></th>
+		<td><input type="text" name="subject" readonly value="<%= @goal.subject.reference %>"></input></td>
+	</tr>
+	<% if @goal.methods.include?(:text) %>
+	<tr>
+		<th><%= label_tag :text %></th>
+		<td> <textarea name="text" rows=5 cols=60> <%= @goal.text || "id assigned at save" %></textarea></td>
+	</tr>
+	<% end %>
+
+	<tr>											
+		<th><%= label_tag "Description Text (for the Codeable Concept)" %></th>
+		<td><input type="text" name="descriptionText" value="<%= @goal.description.text %>"> </input></td>
+	</tr>
+
+	<tr>
+		<th><%= label_tag :lifecycleStatus %></th>
+		<td>
+		<%= select_tag(:lifecycleStatus, options_for_select(
+			"proposed,planned,accepted,active,on-hold,completed,cancelled,entered-in-error,rejected".split(",").map {|s|[s]}, @goal.lifecycleStatus))%>	</td>		
+	</tr>
+	<tr>
+		<th><%= label_tag :priority %></th>
+		<td>
+		<%= select_tag(:priority, options_for_select('high-priority,medium-priority,low-priority'.split(',').map {|p|[p]}, @goal.priority))
+		%>	</td>		
+	</tr>
+ </table>
 
   <div class="actions">
-    <%= form.submit %>
+    <%= form.submit "Save Goal"%>
   </div>
+  
 <% end %>
+</div>
+</div>
+</div>
+</div>

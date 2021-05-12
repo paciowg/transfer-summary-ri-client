@@ -1,8 +1,14 @@
 body {
-	background-color: #020;
-	color: #eee;
+	background-color: /* #020 */ #020 ;
+	color: #eee; /* red */
 	padding-bottom: 20px;
   }
+  .footer {
+  background-color: rgb(158, 74, 0) ;
+	color: #eee; /* red */
+	padding-bottom: 20px;
+  }
+  a:visited { color: black ;  background-color: cyan;}
   
   main > .container {
 	padding: 30px 15px;
@@ -54,7 +60,8 @@ body {
   }
   
   .table-dark {
-	background-color: #244a30;
+	background-color: #244a30 ;
+	color: black;
   }
   
   .table-dark th, .table-dark td, .table-dark thead th {

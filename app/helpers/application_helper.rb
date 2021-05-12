@@ -29,7 +29,7 @@ module ApplicationHelper
 	#-----------------------------------------------------------------------------
 
 	def display_human_name(name)
-	  human_name = [name.prefix.join(', '), name.given.join(' '), name.family].join(' ')
+		human_name = [name.prefix.join(', '), name.given.join(' '), name.family].join(' ')
 	  human_name += ', ' + name.suffix.join(', ') if name.suffix.present?
 	  sanitize(human_name)
 	end
